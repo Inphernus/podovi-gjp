@@ -37,7 +37,7 @@
   --primary: var(--hrast);
   --primary-foreground: var(--crna);
   --muted: var(--estrih);
-  --muted-foreground: var(--nivelir);
+  --muted-foreground: #57534D; /* sporedni tekst: kontrast ≥ 4,5:1 na gips; --nivelir samo za linije */
   --ring: var(--hrast);
 }
 
@@ -46,7 +46,7 @@
   --foreground: var(--gips);
   --border: rgb(239 239 236 / 0.18);
   --primary: var(--hrast-svijetli);
-  --muted-foreground: var(--estrih);
+  --muted-foreground: #B8B2A9;
   --ring: var(--hrast-svijetli);
   background: var(--background);
   color: var(--foreground);
