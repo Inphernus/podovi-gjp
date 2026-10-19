@@ -67,16 +67,29 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
     if (jednoIzbor) idiNa(nextStep(korak, nove));
   };
 
+  // Greške se prikazuju uz polja, a fokus ide na prvo neispravno polje (redom kao u koraku)
+  const prikaziGreske = (g: Greske) => {
+    setGreske(g);
+    const prvo = [...def.polja.map((p) => p.name), 'prilog'].find((n) => g[n as FieldName | 'prilog']);
+    if (!prvo) return;
+    requestAnimationFrame(() => {
+      const el =
+        document.getElementById(`nalog-${prvo}`) ??
+        document.querySelector<HTMLElement>(`[aria-labelledby="nalog-${prvo}-label"] [tabindex="0"]`);
+      el?.focus();
+    });
+  };
+
   const dalje = () => {
     const g = validateStep(korak, a);
-    if (Object.keys(g).length) return setGreske(g);
+    if (Object.keys(g).length) return prikaziGreske(g);
     idiNa(nextStep(korak, a));
   };
 
   const posalji = async (e: React.FormEvent) => {
     e.preventDefault();
     const g = validateStep('kontakt', a, prilog);
-    if (Object.keys(g).length) return setGreske(g);
+    if (Object.keys(g).length) return prikaziGreske(g);
     for (const id of vidljivi) {
       if (Object.keys(validateStep(id, a)).length) return idiNa(id);
     }
@@ -132,7 +145,7 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
         {p.tip === 'textarea' ? (
           <textarea rows={4} {...zajednicko} />
         ) : (
-          p.tip === 'email' ? <input type="email" {...zajednicko} />
+          p.tip === 'email' ? <input type="email" spellcheck={false} {...zajednicko} />
           : p.tip === 'tel' ? <input type="tel" inputMode="tel" {...zajednicko} />
           : <input type="text" {...zajednicko} />
         )}
@@ -149,7 +162,7 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
         <div className="mb-6">
           <p className="mb-2 text-sm font-semibold text-muted-foreground">Korak {redni} od {vidljivi.length}</p>
           <div className="h-1 w-full bg-border" aria-hidden="true">
-            <div className="h-1 bg-primary transition-[width] duration-300" style={{ width: `${(redni / vidljivi.length) * 100}%` }} />
+            <div className="h-1 origin-left bg-primary transition-transform duration-300" style={{ transform: `scaleX(${redni / vidljivi.length})` }} />
           </div>
         </div>
 

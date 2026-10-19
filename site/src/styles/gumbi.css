@@ -16,12 +16,26 @@
 
 /* Primarni: hrast, crna ispuna klizi slijeva pri hoveru */
 .btn-primary {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   color: var(--primary-foreground);
-  background: linear-gradient(var(--crna), var(--crna)) no-repeat left / 0% 100%, var(--primary);
+  background: var(--primary);
   border-color: var(--primary);
-  transition: background-size 0.25s ease, color 0.25s ease;
+  transition: color 0.25s ease;
 }
-.btn-primary:hover { background-size: 100% 100%, auto; color: var(--gips); }
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--crna);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.btn-primary:hover { color: var(--gips); }
+.btn-primary:hover::before { transform: scaleX(1); }
 
 /* Sekundarni: obrub, puni se bojom teksta */
 .btn-secondary {

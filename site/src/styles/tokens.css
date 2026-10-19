@@ -82,6 +82,8 @@
     font-size: 1.0625rem;
     line-height: 1.6;
     font-stretch: 100%;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgb(168 116 63 / 0.2);
   }
   h1, h2, h3 {
     font-weight: 800;

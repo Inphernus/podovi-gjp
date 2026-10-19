@@ -86,11 +86,13 @@ const grupe = [...new Set(ostale.map((u) => u.data.grupa))].map((g) => ({
   h3 { margin: 0 0 0.5rem; font-size: 1rem; font-stretch: 100%; font-weight: 600; color: var(--nivelir); line-height: 1.3; }
   ul { list-style: none; margin: 0; padding: 0; }
   li a {
-    display: inline-block; padding-block: 0.4rem; color: inherit; font-weight: 700; text-decoration: none;
-    background: linear-gradient(var(--primary), var(--primary)) no-repeat left bottom / 0% 2px;
-    transition: background-size 0.25s ease;
+    display: inline-block; padding-block: 0.4rem; color: inherit; font-weight: 700; text-decoration: none; position: relative;
   }
-  li a:hover, li a:focus-visible { background-size: 100% 2px; }
+  li a::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--primary);
+    transform: scaleX(0); transform-origin: left; transition: transform 0.25s ease;
+  }
+  li a:hover::after, li a:focus-visible::after { transform: scaleX(1); }
   @media (max-width: 900px) {
     .head { grid-template-columns: minmax(0, 1fr); }
     .head h2, .head p { grid-column: 1; }

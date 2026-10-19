@@ -15,7 +15,7 @@ const karta = `https://www.google.com/maps/search/?api=1&query=${encodeURICompon
   <dl>
     <div><dt>Telefon</dt><dd><a href={`tel:${site.telefon.replace(/\s/g, '')}`}>{site.telefon}</a></dd></div>
     <div><dt>E-mail</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>
-    <div><dt>Adresa</dt><dd>{adresa} · <a href={karta} rel="noopener">Otvori kartu</a></dd></div>
+    <div><dt>Adresa</dt><dd>{adresa}<br /><a href={karta} rel="noopener">Otvori kartu</a></dd></div>
     <div><dt>Područje rada</dt><dd>{site.podrucje}</dd></div>
   </dl>
   <p><a class="btn btn-primary" href="/zatrazi-ponudu/">Zatraži ponudu</a></p>

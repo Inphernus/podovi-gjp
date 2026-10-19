@@ -60,6 +60,7 @@ const trenutna = Astro.url.pathname;
   .drawer {
     margin: 0 0 0 auto; height: 100dvh; max-height: none; width: min(22rem, 100vw);
     padding: 1rem clamp(1rem, 4vw, 2rem); border: 0; background: var(--gips); color: var(--crna);
+    overscroll-behavior: contain;
   }
   .drawer::backdrop { background: rgb(0 0 0 / 0.45); }
   .drawer-top { display: flex; justify-content: flex-end; }
