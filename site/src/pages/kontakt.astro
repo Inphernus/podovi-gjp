@@ -1,0 +1,22 @@
+---
+import InfoStranica from '../components/astro/InfoStranica.astro';
+import { site } from '../lib/site';
+
+const adresa = `${site.adresa.ulica}, ${site.adresa.postanskiBroj} ${site.adresa.grad}`;
+const karta = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.naziv}, ${adresa}`)}`;
+---
+
+<InfoStranica
+  naslov="Kontakt"
+  path="/kontakt/"
+  opis="Kontakt Podovi GJP: telefon, e-mail i adresa. Za ponudu pošaljite radni nalog s podacima o prostoru."
+  uvod="Za ponudu je najbrže poslati radni nalog s podacima o prostoru. Za sve ostalo nas nazovite ili pošaljite e-mail."
+>
+  <dl>
+    <div><dt>Telefon</dt><dd><a href={`tel:${site.telefon.replace(/\s/g, '')}`}>{site.telefon}</a></dd></div>
+    <div><dt>E-mail</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>
+    <div><dt>Adresa</dt><dd>{adresa} · <a href={karta} rel="noopener">Otvori kartu</a></dd></div>
+    <div><dt>Područje rada</dt><dd>{site.podrucje}</dd></div>
+  </dl>
+  <p><a class="btn btn-primary" href="/zatrazi-ponudu/">Zatraži ponudu</a></p>
+</InfoStranica>

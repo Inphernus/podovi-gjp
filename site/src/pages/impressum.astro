@@ -1,0 +1,15 @@
+---
+import InfoStranica from '../components/astro/InfoStranica.astro';
+import { site } from '../lib/site';
+// TODO-kum: OIB, MBS/MB, sud registra, temeljni kapital, odgovorna osoba, IBAN (ako se objavljuje)
+---
+
+<InfoStranica naslov="Impressum" path="/impressum/" opis="Podaci o pružatelju usluga Podovi GJP.">
+  <dl>
+    <div><dt>Naziv</dt><dd>{site.pravniNaziv}</dd></div>
+    <div><dt>Adresa</dt><dd>{site.adresa.ulica}, {site.adresa.postanskiBroj} {site.adresa.grad}</dd></div>
+    <div><dt>OIB</dt><dd>TODO-kum</dd></div>
+    <div><dt>Telefon</dt><dd>{site.telefon}</dd></div>
+    <div><dt>E-mail</dt><dd>{site.email}</dd></div>
+  </dl>
+</InfoStranica>

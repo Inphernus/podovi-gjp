@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+
+interface Props {
+  naslov: string;
+  opis: string;
+  path: string;
+  uvod?: string;
+  noindex?: boolean;
+}
+
+const { naslov, opis, path, uvod, noindex = false } = Astro.props;
+const putanja = [
+  { naziv: 'Naslovna', path: '/' },
+  { naziv: naslov, path },
+];
+---
+
+<BaseLayout title={naslov} description={opis} canonicalPath={path} noindex={noindex} jsonLd={[breadcrumbSchema(putanja)]}>
+  <Breadcrumbs items={putanja} />
+  <article class="wrap info">
+    <h1>{naslov}</h1>
+    {uvod && <p class="lead">{uvod}</p>}
+    <div class="prose"><slot /></div>
+  </article>
+  <slot name="poslije" />
+</BaseLayout>
+
+<style>
+  .info { padding-block: clamp(2rem, 5vw, 4rem) 4rem; }
+  h1 { margin: 0 0 1.25rem; font-size: clamp(2.6rem, 6.5vw, 5.6rem); font-stretch: 62%; }
+  .lead { margin: 0 0 2rem; font-size: 1.3rem; line-height: 1.5; max-width: 36em; }
+  .prose { max-width: 42em; }
+  .prose :global(h2) { font-size: 1.8rem; font-stretch: 75%; margin: 2.25rem 0 0.75rem; line-height: 1.1; }
+  .prose :global(p), .prose :global(ul), .prose :global(dl) { margin: 0 0 1rem; }
+  .prose :global(ul) { padding-left: 1.25rem; list-style: disc; }
+  .prose :global(a:not(.btn)) { color: inherit; text-decoration-line: underline; text-decoration-color: var(--primary); text-decoration-thickness: 2px; text-underline-offset: 4px; font-weight: 600; }
+  .prose :global(dl div) { display: grid; grid-template-columns: 9rem 1fr; gap: 0.75rem; padding-block: 0.6rem; border-top: 1px solid var(--border); }
+  .prose :global(dt) { color: var(--nivelir); }
+  .prose :global(dd) { margin: 0; font-weight: 600; }
+</style>

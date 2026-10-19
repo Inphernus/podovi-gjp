@@ -7,6 +7,6 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://podovi-gjp.hr',
   trailingSlash: 'always',
-  integrations: [preact({ compat: true }), sitemap({ filter: (page) => !page.includes('/hvala/') })],
+  integrations: [preact({ compat: true }), sitemap({ filter: (page) => !page.includes('/hvala/') && !page.includes('/404') })],
   vite: { plugins: [tailwindcss()] },
 });

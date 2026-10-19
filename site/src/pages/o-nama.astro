@@ -1,0 +1,36 @@
+---
+import InfoStranica from '../components/astro/InfoStranica.astro';
+import CtaTraka from '../components/astro/CtaTraka.astro';
+// TODO-kum: od kada firma radi, veličina ekipe, certifikati i članstva (specifikacija §11)
+---
+
+<InfoStranica
+  naslov="O nama"
+  path="/o-nama/"
+  opis="Podovi GJP izvodi podopolagačke radove za poslovne, javne i privatne prostore diljem Hrvatske, od pripreme podloge do završnih radova."
+  uvod="Izvodimo podopolagačke radove za poslovne, javne i privatne prostore diljem Hrvatske, s fokusom na LVT podne obloge, tepihe, PVC podove u roli i epoksidne sustave."
+>
+  <h2>Što radimo</h2>
+  <p>
+    Radimo sustave koje većina izvođača ne radi: PVC s holkerima i varenim spojevima, linoleum, gumene i Bolon podove,
+    tepih na gripere, duple podove i epoksidne sustave. Uz to ugrađujemo LVT u svim formatima, tepih ploče i laminat.
+    Cijeli popis je na stranici <a href="/usluge/">usluge</a>.
+  </p>
+
+  <h2>Kako radimo</h2>
+  <p>
+    Kvaliteta poda gotovo je u potpunosti određena podlogom ispod njega. Zato prije polaganja mjerimo vlagu estriha CM
+    metodom i ravninu podloge, a pripremu podloge, završne radove i logistiku navodimo kao zasebne stavke ponude, da ne
+    bi bile izostavljene iz troškovnika.
+  </p>
+  <p>Za pripremu podloge koristimo UZIN sustave, među ostalim nivelir mase NC 160 i NC 160 Si.</p>
+
+  <h2>Za koga radimo</h2>
+  <p>
+    Investitore, projektante i građevinske tvrtke: zdravstvene i obrazovne ustanove, hotele, urede, sportske i
+    industrijske objekte te veće stambene projekte. Radimo i kao podizvođač za podopolagačke radove po troškovniku.
+  </p>
+  <p>Pogledajte <a href="/reference/">reference</a> ili nam pošaljite <a href="/zatrazi-ponudu/">radni nalog</a>.</p>
+
+  <CtaTraka slot="poslije" />
+</InfoStranica>
