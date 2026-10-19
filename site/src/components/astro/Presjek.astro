@@ -13,7 +13,7 @@ const svg = renderPresjekSvg(SLOJEVI);
     </p>
   </div>
 
-  <div class="stage">
+  <div class="stage" data-raslojavanje-kraj="0.2">
     <div class="wrap stage-inner">
       <div class="left">
         <ol class="layer-list">
@@ -26,7 +26,7 @@ const svg = renderPresjekSvg(SLOJEVI);
             </li>
           ))}
         </ol>
-        <div class="detail" aria-live="polite">
+        <div class="detail">
           {SLOJEVI.map((s) => (
             <article id={`sloj-${s.id}`}>
               <span class="big" aria-hidden="true">{s.velikiBroj}</span>
@@ -54,17 +54,55 @@ const svg = renderPresjekSvg(SLOJEVI);
       clanci.forEach((a) => (a.hidden = a.id !== `sloj-${id}`));
       slojevi.forEach((g) => g.classList.toggle('is-active', g.dataset.id === id));
     };
+    // Skrol sloj po sloj: nakon raslojavanja (prvih KRAJ skrola pozornice) svaki od 7 segmenata
+    // aktivira jedan sloj. Radi samo dok je pozornica ljepljiva (desktop, bez smanjenog kretanja).
+    const stage = root.querySelector<HTMLElement>('.stage')!;
+    const inner = root.querySelector<HTMLElement>('.stage-inner')!;
+    const KRAJ = Number(stage.dataset.raslojavanjeKraj);
+    const ids = [...gumbi].map((b) => b.dataset.id!);
+    const segment = (1 - KRAJ) / ids.length;
+    let trenutni = '';
+    const ljepljivo = () => getComputedStyle(inner).position === 'sticky';
+    const vrh = () => stage.getBoundingClientRect().top + scrollY;
+    const raspon = () => stage.offsetHeight - innerHeight;
+
+    const postavi = (id: string) => {
+      if (id === trenutni) return;
+      trenutni = id;
+      aktiviraj(id);
+    };
+    const prema = (id: string) => {
+      postavi(id);
+      if (!ljepljivo()) return;
+      const p = KRAJ + (ids.indexOf(id) + 0.5) * segment;
+      const glatko = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      scrollTo({ top: vrh() + p * raspon(), behavior: glatko ? 'smooth' : 'instant' });
+    };
+
+    let ceka = false;
+    addEventListener('scroll', () => {
+      if (ceka) return;
+      ceka = true;
+      requestAnimationFrame(() => {
+        ceka = false;
+        if (!ljepljivo()) return;
+        const p = (scrollY - vrh()) / raspon();
+        const i = Math.min(ids.length - 1, Math.max(0, Math.floor((p - KRAJ) / segment)));
+        postavi(ids[i]);
+      });
+    }, { passive: true });
+
     root.classList.add('js');
     stack?.classList.add('has-active');
     root.querySelector('.layer-list')?.addEventListener('click', (e) => {
       const b = (e.target as Element).closest<HTMLButtonElement>('.layer-btn');
-      if (b?.dataset.id) aktiviraj(b.dataset.id);
+      if (b?.dataset.id) prema(b.dataset.id);
     });
     stack?.addEventListener('click', (e) => {
       const g = (e.target as Element).closest<SVGGElement>('.layer');
-      if (g?.dataset.id) aktiviraj(g.dataset.id);
+      if (g?.dataset.id) prema(g.dataset.id);
     });
-    aktiviraj('lvt');
+    postavi('lvt');
   }
 </script>
 
@@ -79,7 +117,8 @@ const svg = renderPresjekSvg(SLOJEVI);
   .intro h2 { grid-column: 1 / span 7; margin: 0; font-size: clamp(2.2rem, 4.5vw, 3.6rem); font-stretch: 70%; }
   .intro p { grid-column: 8 / span 5; margin: 0; align-self: end; color: var(--muted-foreground); max-width: 32em; }
 
-  .stage { height: 230vh; position: relative; }
+  /* 20 % skrola raslojava presjek, ostatak prolazi sloj po sloj (7 segmenata) */
+  .stage { height: 420vh; position: relative; }
   .stage-inner {
     position: sticky; top: 0; height: 100vh; min-height: 640px;
     display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem; align-items: center;
@@ -125,7 +164,7 @@ const svg = renderPresjekSvg(SLOJEVI);
 
   @supports (animation-timeline: view()) {
     .stage { view-timeline-name: --stage; }
-    .stack { animation: raslojavanje linear both; animation-timeline: --stage; animation-range: contain 0% contain 55%; }
+    .stack { animation: raslojavanje linear both; animation-timeline: --stage; animation-range: contain 0% contain 20%; }
   }
   @supports not (animation-timeline: view()) {
     .stack { --gap: 46px; }
