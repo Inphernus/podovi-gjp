@@ -1,0 +1,73 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/astro/Breadcrumbs.astro';
+import Faq from '../../components/astro/Faq.astro';
+import CtaTraka from '../../components/astro/CtaTraka.astro';
+import { articleSchema, breadcrumbSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const savjeti = await getCollection('savjeti');
+  const usluge = await getCollection('usluge');
+  return savjeti.map((s) => ({ params: { slug: s.id }, props: { savjet: s, usluge } }));
+}
+
+const { savjet, usluge } = Astro.props;
+const d = savjet.data;
+const { Content } = await render(savjet);
+const putanja = [
+  { naziv: 'Naslovna', path: '/' },
+  { naziv: 'Savjeti', path: '/savjeti/' },
+  { naziv: d.naslov, path: `/savjeti/${savjet.id}/` },
+];
+const povezane = d.povezaneUsluge.map((s) => usluge.find((u) => u.id === s)).filter((u) => u !== undefined);
+const datum = d.datum.toLocaleDateString('hr-HR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title={d.naslov}
+  description={d.metaOpis}
+  canonicalPath={`/savjeti/${savjet.id}/`}
+  jsonLd={[articleSchema({ naslov: d.naslov, metaOpis: d.metaOpis, datum: d.datum, slug: savjet.id }), breadcrumbSchema(putanja)]}
+>
+  <Breadcrumbs items={putanja} />
+  <article class="wrap clanak">
+    <header>
+      <h1>{d.naslov}</h1>
+      <p class="lead">{d.kratakOdgovor}</p>
+      <time datetime={d.datum.toISOString().slice(0, 10)}>{datum}</time>
+    </header>
+    <div class="prose"><Content /></div>
+  </article>
+
+  {d.faq && <Faq pitanja={d.faq} />}
+
+  <nav class="wrap povezane" aria-labelledby="povezane-naslov">
+    <h2 id="povezane-naslov">Povezane usluge</h2>
+    <ul>{povezane.map((u) => <li><a href={`/usluge/${u.id}/`}>{u.data.naslov}</a></li>)}</ul>
+  </nav>
+
+  <CtaTraka />
+</BaseLayout>
+
+<style>
+  .clanak { padding-block: clamp(2rem, 5vw, 4rem) 3rem; }
+  header { max-width: 52rem; }
+  h1 { margin: 0 0 1.25rem; font-size: clamp(2.4rem, 5.5vw, 4.6rem); font-stretch: 62%; }
+  .lead { margin: 0 0 0.75rem; font-size: 1.3rem; line-height: 1.5; max-width: 36em; }
+  time { color: var(--nivelir); font-size: 0.95rem; }
+  .prose { max-width: 42em; margin-top: 2.5rem; }
+  .prose :global(h2) { font-size: 1.9rem; font-stretch: 75%; margin: 2.5rem 0 0.75rem; line-height: 1.1; }
+  .prose :global(p), .prose :global(ul) { margin: 0 0 1rem; }
+  .prose :global(ul) { padding-left: 1.25rem; list-style: disc; }
+  .prose :global(li) { margin-bottom: 0.4rem; }
+  .prose :global(a) { color: inherit; text-decoration-line: underline; text-decoration-color: var(--primary); text-decoration-thickness: 2px; text-underline-offset: 4px; font-weight: 600; }
+  .prose :global(table) { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.98rem; display: block; overflow-x: auto; }
+  .prose :global(th), .prose :global(td) { text-align: left; padding: 0.6rem 0.75rem 0.6rem 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .prose :global(thead th) { font-weight: 800; border-bottom: 2px solid var(--crna); }
+  .prose :global(tbody th), .prose :global(td:first-child) { color: var(--nivelir); font-weight: 600; }
+  .povezane { padding-block: 0 4rem; }
+  .povezane h2 { font-size: 1.9rem; font-stretch: 75%; margin: 0 0 1rem; }
+  .povezane ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; }
+  .povezane a { display: inline-block; padding-block: 0.5rem; font-weight: 700; color: inherit; text-decoration-line: underline; text-decoration-color: var(--primary); text-underline-offset: 5px; text-decoration-thickness: 2px; }
+</style>

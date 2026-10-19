@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/astro/Breadcrumbs.astro';
+import CtaTraka from '../../components/astro/CtaTraka.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const savjeti = (await getCollection('savjeti')).sort((a, b) => b.data.datum.getTime() - a.data.datum.getTime());
+const putanja = [
+  { naziv: 'Naslovna', path: '/' },
+  { naziv: 'Savjeti', path: '/savjeti/' },
+];
+---
+
+<BaseLayout
+  title="Savjeti o podovima"
+  description="Stručni savjeti o podnim oblogama: sušenje estriha i CM metoda, podno grijanje, vinil ili laminat, linoleum ili PVC, holkeri."
+  canonicalPath="/savjeti/"
+  jsonLd={[breadcrumbSchema(putanja)]}
+>
+  <Breadcrumbs items={putanja} />
+  <header class="wrap head">
+    <h1>Savjeti o podovima</h1>
+    <p class="lead">Odgovori na pitanja koja investitori, projektanti i izvođači najčešće postavljaju prije polaganja poda.</p>
+  </header>
+  <ul class="wrap popis">
+    {savjeti.map((s) => (
+      <li>
+        <h2><a href={`/savjeti/${s.id}/`}>{s.data.naslov}</a></h2>
+        <p>{s.data.kratakOdgovor}</p>
+      </li>
+    ))}
+  </ul>
+  <CtaTraka />
+</BaseLayout>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 4rem) 1.5rem; }
+  h1 { margin: 0 0 1rem; font-size: clamp(2.6rem, 6.5vw, 5.6rem); font-stretch: 62%; }
+  .lead { margin: 0; font-size: 1.3rem; max-width: 36em; }
+  .popis { list-style: none; margin: 0 auto; padding-bottom: 4rem; }
+  li { padding-block: 1.75rem; border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0.5rem 1.5rem; }
+  h2 { grid-column: 1 / span 5; margin: 0; font-size: 1.7rem; font-stretch: 75%; line-height: 1.1; }
+  h2 a { color: inherit; text-decoration-line: underline; text-decoration-color: var(--primary); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+  li p { grid-column: 7 / span 6; margin: 0; }
+  @media (max-width: 900px) {
+    li { grid-template-columns: minmax(0, 1fr); }
+    h2, li p { grid-column: 1; }
+  }
+</style>
