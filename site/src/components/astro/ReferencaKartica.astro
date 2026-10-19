@@ -1,0 +1,49 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { prikazniNaziv } from '../../lib/reference-filter';
+import { OBJEKTI } from '../../lib/objekti';
+
+interface Props {
+  referenca: CollectionEntry<'reference'>;
+}
+
+const { referenca } = Astro.props;
+const d = referenca.data;
+const usluge = await getCollection('usluge');
+const obloge = d.obloge.map((s) => usluge.find((u) => u.id === s)?.data.naslov ?? s);
+const tip = OBJEKTI.find((o) => o.value === d.tipObjekta)?.kratko;
+const m2 = `${d.povrsinaM2.toLocaleString('hr-HR')} m²`;
+---
+
+<article class="kartica" data-referenca>
+  <div class="slika">
+    {d.slike[0] ? (
+      <Image src={d.slike[0]} alt={prikazniNaziv(d)} widths={[480, 800]} sizes="(max-width: 900px) 100vw, 33vw" />
+    ) : (
+      <span class="m2" aria-hidden="true">{m2}</span>
+    )}
+  </div>
+  <h3>{prikazniNaziv(d)}</h3>
+  <dl>
+    <div><dt>Objekt</dt><dd>{tip}</dd></div>
+    <div><dt>Obloga</dt><dd>{obloge.join(', ')}</dd></div>
+    <div><dt>Površina</dt><dd>{m2}</dd></div>
+    <div><dt>Mjesto i godina</dt><dd>{d.grad}, {d.godina}.</dd></div>
+  </dl>
+</article>
+
+<style>
+  .slika { aspect-ratio: 4 / 3; background: var(--wenge); display: flex; align-items: flex-end; padding: 1rem; overflow: hidden; }
+  .slika :global(img) { width: 100%; height: 100%; object-fit: cover; margin: -1rem; max-width: none; width: calc(100% + 2rem); height: calc(100% + 2rem); }
+  .m2 {
+    font-size: clamp(2.6rem, 5vw, 3.8rem); line-height: 0.9; font-weight: 900; font-stretch: 62%;
+    color: transparent; -webkit-text-stroke: 1.2px var(--hrast-svijetli);
+  }
+  h3 { margin: 1rem 0 0.5rem; font-size: 1.4rem; font-stretch: 85%; line-height: 1.15; }
+  dl { margin: 0; display: grid; gap: 0.15rem; font-size: 0.95rem; }
+  dl div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.5rem; }
+  dt { color: var(--nivelir); }
+  dd { margin: 0; }
+</style>

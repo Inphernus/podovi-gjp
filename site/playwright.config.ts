@@ -11,5 +11,6 @@ export default defineConfig({
     url: 'http://localhost:4322',
     reuseExistingServer: false,
     timeout: 180_000,
+    env: { PUBLIC_DRAFTOVI: '1' },
   },
 });

@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/astro/Breadcrumbs.astro';
+import ReferencaKartica from '../components/astro/ReferencaKartica.astro';
+import CtaTraka from '../components/astro/CtaTraka.astro';
+import { getReference } from '../lib/reference';
+import { OBJEKTI } from '../lib/objekti';
+import { breadcrumbSchema } from '../lib/schema';
+
+const sve = await getReference();
+const grupe = OBJEKTI.map((o) => ({ ...o, reference: sve.filter((r) => r.data.tipObjekta === o.value) })).filter((g) => g.reference.length);
+const putanja = [
+  { naziv: 'Naslovna', path: '/' },
+  { naziv: 'Reference', path: '/reference/' },
+];
+---
+
+<BaseLayout
+  title="Reference"
+  description="Izvedeni podopolagački radovi: hoteli, zdravstvene ustanove, škole, uredi, sportski i industrijski objekti diljem Hrvatske."
+  canonicalPath="/reference/"
+  jsonLd={[breadcrumbSchema(putanja)]}
+>
+  <Breadcrumbs items={putanja} />
+  <header class="wrap head">
+    <h1>Reference</h1>
+    <p class="lead">Izvedeni projekti po vrsti objekta: obloga, površina, mjesto i godina izvedbe.</p>
+  </header>
+
+  {grupe.length > 0 ? (
+    <>
+      <nav class="wrap filter" aria-label="Vrsta objekta" data-filter>
+        {grupe.map((g) => <a href={`#${g.value}`}>{g.kratko}</a>)}
+      </nav>
+      <div class="wrap">
+        {grupe.map((g) => (
+          <section id={g.value} aria-labelledby={`h-${g.value}`}>
+            <h2 id={`h-${g.value}`}>{g.kratko}</h2>
+            <div class="mreza">{g.reference.map((r) => <ReferencaKartica referenca={r} />)}</div>
+          </section>
+        ))}
+      </div>
+    </>
+  ) : (
+    <p class="wrap prazno">Popis referenci uskoro objavljujemo. Do tada nam se javite za primjere izvedenih radova sličnih vašem projektu.</p>
+  )}
+
+  <CtaTraka />
+</BaseLayout>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 4rem) 1.5rem; }
+  h1 { margin: 0 0 1rem; font-size: clamp(2.6rem, 6.5vw, 5.6rem); font-stretch: 62%; }
+  .lead { margin: 0; font-size: 1.3rem; max-width: 36em; }
+  .filter { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; padding-bottom: 1rem; }
+  .filter a {
+    display: inline-flex; align-items: center; min-height: 44px; color: inherit; font-weight: 700;
+    text-decoration-line: underline; text-decoration-color: var(--primary); text-decoration-thickness: 2px; text-underline-offset: 6px;
+  }
+  section { padding-block: 2rem 3rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  h2 { margin: 0 0 1.5rem; font-size: 2rem; font-stretch: 75%; }
+  .mreza { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 2.5rem 1.5rem; }
+  .prazno { padding-block: 2rem 4rem; font-size: 1.15rem; max-width: 40em; }
+</style>

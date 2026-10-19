@@ -7,6 +7,7 @@ import UslugeSekcija from '../components/astro/UslugeSekcija.astro';
 import Proces from '../components/astro/Proces.astro';
 import Faq from '../components/astro/Faq.astro';
 import CtaTraka from '../components/astro/CtaTraka.astro';
+import ReferenceSekcija from '../components/astro/ReferenceSekcija.astro';
 import { getCollection } from 'astro:content';
 import { businessSchema, websiteSchema } from '../lib/schema';
 
@@ -47,6 +48,7 @@ const pitanja = [
   <ObjektiStrip />
   <Presjek />
   <UslugeSekcija />
+  <ReferenceSekcija naslov="Reference" filter={{ limit: 3 }} oznaka="istaknute" />
   <Proces />
   <Faq pitanja={pitanja} />
   <CtaTraka />

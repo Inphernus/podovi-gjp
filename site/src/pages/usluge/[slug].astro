@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/astro/Breadcrumbs.astro';
 import Faq from '../../components/astro/Faq.astro';
 import CtaTraka from '../../components/astro/CtaTraka.astro';
+import ReferenceSekcija from '../../components/astro/ReferenceSekcija.astro';
 import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
 import { ponudaHref } from '../../lib/obloge';
 
@@ -48,6 +49,8 @@ const jsonLd = [serviceSchema({ naslov: d.naslov, kratakOdgovor: d.kratakOdgovor
       </div>
     </section>
   </article>
+
+  <ReferenceSekcija naslov="Izvedeni projekti" filter={{ obloga: usluga.id, limit: 3 }} oznaka="povezane" />
 
   <Faq pitanja={d.faq} naslov="Česta pitanja" />
 

@@ -1,0 +1,32 @@
+---
+import ReferencaKartica from './ReferencaKartica.astro';
+import { getReference } from '../../lib/reference';
+import type { ReferencaFilter } from '../../lib/reference-filter';
+
+interface Props {
+  naslov: string;
+  filter: ReferencaFilter;
+  oznaka: 'istaknute' | 'povezane';
+}
+
+const { naslov, filter, oznaka } = Astro.props;
+const reference = await getReference(filter);
+const data = oznaka === 'istaknute' ? { 'data-reference-istaknute': '' } : { 'data-povezane-reference': '' };
+---
+
+{reference.length > 0 && (
+  <section class="wrap reference" aria-labelledby={`ref-${oznaka}`} {...data}>
+    <div class="head">
+      <h2 id={`ref-${oznaka}`}>{naslov}</h2>
+      <a class="link" href="/reference/">Sve reference</a>
+    </div>
+    <div class="mreza">{reference.map((r) => <ReferencaKartica referenca={r} />)}</div>
+  </section>
+)}
+
+<style>
+  .reference { padding-block: clamp(3rem, 6vw, 5rem); }
+  .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 2rem; }
+  h2 { margin: 0; font-size: clamp(2.2rem, 4.5vw, 3.6rem); }
+  .mreza { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 2.5rem 1.5rem; }
+</style>

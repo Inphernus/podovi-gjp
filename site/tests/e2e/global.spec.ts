@@ -4,6 +4,7 @@ import { test, expect } from '@playwright/test';
 export const rute = [
   '/',
   '/usluge/',
+  '/reference/',
   ...['priprema-podloge', 'pvc-podovi', 'lvt-vinil', 'linoleum', 'gumeni-podovi', 'bolon-pleteni-vinil', 'tepih-ploce',
     'tepih-u-roli', 'tepih-na-gripere', 'laminat', 'dupli-podovi', 'epoksidni-podovi', 'zavrsni-radovi'].map((s) => `/usluge/${s}/`),
 ];
