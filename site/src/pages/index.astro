@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/astro/Hero.astro';
+import ObjektiStrip from '../components/astro/ObjektiStrip.astro';
+import Presjek from '../components/astro/Presjek.astro';
 import { getCollection } from 'astro:content';
 import { businessSchema, websiteSchema } from '../lib/schema';
 
@@ -13,7 +16,7 @@ const jsonLd = [businessSchema(usluge.map((u) => u.data.naslov)), websiteSchema(
   canonicalPath="/"
   jsonLd={jsonLd}
 >
-  <main class="wrap">
-    <h1>Stručnjaci za podne obloge</h1>
-  </main>
+  <Hero />
+  <ObjektiStrip />
+  <Presjek />
 </BaseLayout>

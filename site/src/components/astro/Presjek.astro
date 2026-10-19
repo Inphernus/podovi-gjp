@@ -1,0 +1,157 @@
+---
+import { SLOJEVI, renderPresjekSvg } from '../../lib/presjek';
+
+const svg = renderPresjekSvg(SLOJEVI);
+---
+
+<section class="dark-section presjek" aria-labelledby="presjek-naslov">
+  <div class="wrap intro">
+    <h2 id="presjek-naslov">Pod je onoliko dobar koliko i ono ispod njega.</h2>
+    <p>
+      Od kvalitetne pripreme podloge do precizne ugradnje i završnih detalja, svakom projektu pristupamo profesionalno,
+      pouzdano i s posebnom pažnjom prema kvaliteti izvedbe.
+    </p>
+  </div>
+
+  <div class="stage">
+    <div class="wrap stage-inner">
+      <div class="left">
+        <ol class="layer-list">
+          {SLOJEVI.map((s) => (
+            <li>
+              <button class="layer-btn" type="button" aria-pressed="false" aria-controls={`sloj-${s.id}`} data-id={s.id}>
+                <span class="depth">{s.dubina}</span>
+                <span class="name">{s.naziv}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <div class="detail" aria-live="polite">
+          {SLOJEVI.map((s) => (
+            <article id={`sloj-${s.id}`}>
+              <span class="big" aria-hidden="true">{s.velikiBroj}</span>
+              <h3>{s.naslov}</h3>
+              <p>{s.tekst}</p>
+              {s.link && <a class="link" href={s.link.href}>{s.link.tekst}</a>}
+            </article>
+          ))}
+        </div>
+      </div>
+      <div class="stack" set:html={svg} />
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector('.presjek');
+  if (root) {
+    const gumbi = root.querySelectorAll<HTMLButtonElement>('.layer-btn');
+    const clanci = root.querySelectorAll<HTMLElement>('.detail article');
+    const slojevi = root.querySelectorAll<SVGGElement>('.stack .layer');
+    const stack = root.querySelector('.stack');
+    const aktiviraj = (id: string) => {
+      gumbi.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
+      clanci.forEach((a) => (a.hidden = a.id !== `sloj-${id}`));
+      slojevi.forEach((g) => g.classList.toggle('is-active', g.dataset.id === id));
+    };
+    root.classList.add('js');
+    stack?.classList.add('has-active');
+    root.querySelector('.layer-list')?.addEventListener('click', (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>('.layer-btn');
+      if (b?.dataset.id) aktiviraj(b.dataset.id);
+    });
+    stack?.addEventListener('click', (e) => {
+      const g = (e.target as Element).closest<SVGGElement>('.layer');
+      if (g?.dataset.id) aktiviraj(g.dataset.id);
+    });
+    aktiviraj('lvt');
+  }
+</script>
+
+<style>
+  @property --gap { syntax: '<length>'; inherits: true; initial-value: 0px; }
+
+  .presjek { margin-top: 1rem; }
+  .intro {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem;
+    padding-block: clamp(4rem, 8vw, 7rem) 2rem;
+  }
+  .intro h2 { grid-column: 1 / span 7; margin: 0; font-size: clamp(2.2rem, 4.5vw, 3.6rem); font-stretch: 70%; }
+  .intro p { grid-column: 8 / span 5; margin: 0; align-self: end; color: var(--muted-foreground); max-width: 32em; }
+
+  .stage { height: 230vh; position: relative; }
+  .stage-inner {
+    position: sticky; top: 0; height: 100vh; min-height: 640px;
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem; align-items: center;
+  }
+  .left { grid-column: 1 / span 5; }
+  .layer-list { list-style: none; margin: 0; padding: 0; position: relative; }
+  .layer-list::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 2px; background: var(--border); }
+  .layer-btn {
+    display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; align-items: baseline;
+    width: 100%; min-height: 44px; padding: 0.5rem 0 0.5rem 1.25rem; position: relative;
+    text-align: left; background: none; border: 0; color: inherit; font: inherit; cursor: pointer;
+  }
+  .layer-btn::before {
+    content: ''; position: absolute; inset: 0 auto 0 0; width: 2px; background: var(--primary);
+    transform: scaleY(0); transition: transform 0.25s ease;
+  }
+  .layer-btn[aria-pressed='true']::before { transform: scaleY(1); }
+  .depth { font-size: 0.9rem; color: var(--nivelir); font-variant-numeric: tabular-nums; }
+  .name { font-weight: 700; font-size: 1.1rem; }
+  .layer-btn[aria-pressed='true'] .name { color: var(--primary); }
+  .layer-btn[aria-pressed='true'] .depth { color: var(--estrih); }
+  .layer-btn:hover .name { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--primary); }
+
+  .detail { margin-top: 1.5rem; }
+  .js .detail { min-height: 17rem; }
+  .detail article + article { margin-top: 2rem; }
+  .js .detail article + article { margin-top: 0; }
+  .detail article[hidden] { display: none; }
+  .big {
+    display: block; margin: 0 0 0.5rem; font-size: clamp(3.2rem, 6vw, 5.2rem); line-height: 0.9;
+    font-weight: 900; font-stretch: 62%; color: transparent; -webkit-text-stroke: 1.5px var(--primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .detail h3 { margin: 0 0 0.4rem; font-size: 1.6rem; line-height: 1.15; font-stretch: 85%; }
+  .detail p { margin: 0 0 0.9rem; color: var(--muted-foreground); max-width: 36em; }
+  .detail .link { color: var(--primary); }
+
+  .stack { grid-column: 6 / span 7; width: 100%; --gap: 0px; }
+  .stack :global(svg) { display: block; width: 100%; height: auto; max-height: 92vh; overflow: visible; }
+  .stack :global(.layer) { transform: translateY(calc(var(--gap) * var(--i) * -1)); transition: filter 0.25s; cursor: pointer; }
+  .stack.has-active :global(.layer) { filter: saturate(0.3) brightness(0.62); }
+  .stack.has-active :global(.layer.is-active), .stack :global(.layer:hover) { filter: none; }
+
+  @supports (animation-timeline: view()) {
+    .stage { view-timeline-name: --stage; }
+    .stack { animation: raslojavanje linear both; animation-timeline: --stage; animation-range: contain 0% contain 55%; }
+  }
+  @supports not (animation-timeline: view()) {
+    .stack { --gap: 46px; }
+    .stage { height: auto; }
+    .stage-inner { position: static; height: auto; padding-block: 3rem 5rem; }
+  }
+  @keyframes raslojavanje { from { --gap: 0px; } to { --gap: 46px; } }
+
+  /* Bez JS-a nema odabira, pa je sve statično raslojeno i čitljivo */
+  .presjek:not(.js) .stage { height: auto; }
+  .presjek:not(.js) .stage-inner { position: static; height: auto; padding-block: 3rem 5rem; align-items: start; }
+  .presjek:not(.js) .stack { animation: none; --gap: 46px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stack { animation: none !important; --gap: 46px; }
+    .stage { height: auto; }
+    .stage-inner { position: static; height: auto; padding-block: 3rem 5rem; }
+  }
+
+  @media (max-width: 900px) {
+    .intro, .stage-inner { grid-template-columns: minmax(0, 1fr); }
+    .intro h2, .intro p, .left, .stack { grid-column: 1; }
+    .stage { height: auto; }
+    .stage-inner { position: static; height: auto; min-height: 0; padding-block: 1rem 4rem; }
+    .stack { animation: none !important; --gap: 34px; order: -1; }
+    .layer-btn { grid-template-columns: 5.5rem 1fr; }
+    .js .detail { min-height: 0; }
+  }
+</style>

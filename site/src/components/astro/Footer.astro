@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import logo from '../../../public/logo.svg?raw';
+import { site } from '../../lib/site';
+
+const usluge = (await getCollection('usluge')).sort((a, b) => a.data.redoslijed - b.data.redoslijed);
+const godina = new Date().getFullYear();
+---
+
+<footer class="dark-section site-footer">
+  <div class="wrap grid">
+    <div class="brand">
+      <a class="logo" href="/" aria-label="Podovi GJP, naslovna" set:html={logo} />
+      <p>Podopolagački radovi za poslovne, javne i privatne prostore diljem Hrvatske.</p>
+      <a class="btn btn-primary" href="/zatrazi-ponudu/">Zatraži ponudu</a>
+    </div>
+    <nav aria-label="Usluge">
+      <h2>Usluge</h2>
+      <ul>{usluge.map((u) => <li><a href={`/usluge/${u.id}/`}>{u.data.naslov}</a></li>)}</ul>
+    </nav>
+    <div>
+      <h2>Kontakt</h2>
+      <ul>
+        <li><a href={`tel:${site.telefon.replace(/\s/g, '')}`}>{site.telefon}</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li>{site.adresa.ulica}, {site.adresa.grad}</li>
+      </ul>
+      <h2>Podovi GJP</h2>
+      <ul>
+        <li><a href="/reference/">Reference</a></li>
+        <li><a href="/savjeti/">Savjeti</a></li>
+        <li><a href="/o-nama/">O nama</a></li>
+        <li><a href="/politika-privatnosti/">Politika privatnosti</a></li>
+        <li><a href="/impressum/">Impressum</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap legal">© {godina} {site.naziv}</div>
+</footer>
+
+<style>
+  .site-footer { margin-top: 0; }
+  .grid {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 2rem 1.5rem;
+    padding-block: 4rem 3rem;
+  }
+  .brand { grid-column: 1 / span 5; }
+  .brand p { color: var(--muted-foreground); max-width: 28em; margin: 1.25rem 0 1.5rem; }
+  .logo { display: block; width: 120px; color: var(--gips); }
+  .logo :global(svg) { display: block; width: 100%; height: auto; }
+  nav { grid-column: 6 / span 4; }
+  .grid > div:last-child { grid-column: 10 / span 3; }
+  h2 { font-size: 1.1rem; font-stretch: 85%; margin: 0 0 0.75rem; line-height: 1.2; }
+  h2:not(:first-child) { margin-top: 1.75rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { padding-block: 0.15rem; color: var(--muted-foreground); }
+  li a { color: var(--gips); text-decoration: none; display: inline-block; padding-block: 0.35rem; }
+  li a:hover { text-decoration: underline; text-decoration-color: var(--primary); text-underline-offset: 4px; }
+  .legal { padding-block: 1.25rem 2rem; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 0.9rem; }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .brand, nav, .grid > div:last-child { grid-column: 1; }
+  }
+</style>

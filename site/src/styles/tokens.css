@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./gumbi.css";
 
 /* ---------- Font (self-hosted subset, vidi scripts/subset-font.mjs) ---------- */
 @font-face {
@@ -101,3 +102,9 @@
   margin-inline: auto;
   padding-inline: clamp(1rem, 4vw, 3.5rem);
 }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 50;
+  padding: 0.75rem 1rem; background: var(--crna); color: var(--gips); font-weight: 700;
+}
+.skip:focus { top: 1rem; }
