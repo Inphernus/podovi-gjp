@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Podovi GJP | Stručnjaci za podne obloge</title>
+<meta name="description" content="Podopolagački radovi za poslovne, javne i privatne prostore diljem Hrvatske: LVT podne obloge, tepisi, PVC podovi u roli i epoksidni sustavi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+  @property --gap { syntax: '<length>'; inherits: true; initial-value: 0px; }
+
+  :root {
+    --crna: #000;
+    --wenge: #2B2420;
+    --hrast: #A8743F;
+    --hrast-svijetli: #C99A66;
+    --estrih: #D6D2CB;
+    --gips: #EFEFEC;
+    --nivelir: #7D7972;
+
+    --font: 'Archivo', system-ui, sans-serif;
+    --step-0: 1.0625rem;
+    --step-1: 1.25rem;
+    --step-2: 1.6rem;
+    --step-3: clamp(2.2rem, 4.5vw, 3.6rem);
+    --step-4: clamp(3.2rem, 9vw, 8.4rem);
+    --gutter: clamp(1rem, 4vw, 3.5rem);
+    --max: 1360px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--gips);
+    color: var(--crna);
+    font-family: var(--font);
+    font-size: var(--step-0);
+    line-height: 1.6;
+    font-variation-settings: 'wdth' 100;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--hrast); outline-offset: 3px; }
+  .wrap { max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
+
+  /* ---------- Header ---------- */
+  .site-header { border-bottom: 1px solid var(--estrih); }
+  .site-header .wrap { display: flex; align-items: center; gap: 2rem; min-height: 76px; }
+  .logo { display: block; width: 100px; height: 50px; overflow: hidden; position: relative; flex: none; }
+  .logo img { position: absolute; width: 133px; height: auto; left: -25px; top: -35px; mix-blend-mode: multiply; }
+  .nav { display: flex; gap: 1.75rem; margin-left: auto; }
+  .nav a { text-decoration: none; font-weight: 500; font-size: 0.98rem; padding-block: .5rem; }
+  .nav a:hover { text-decoration: underline; text-decoration-color: var(--hrast); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 52px; padding: 0 1.6rem;
+    font: 700 1rem/1 var(--font); font-variation-settings: 'wdth' 100;
+    text-decoration: none; border: 2px solid var(--crna); border-radius: 2px;
+    transition: background-color .2s, color .2s, border-color .2s;
+  }
+  .btn-primary { background: var(--hrast); border-color: var(--hrast); color: var(--crna); }
+  .btn-primary:hover { background: var(--hrast-svijetli); border-color: var(--hrast-svijetli); }
+  .btn-ghost { background: transparent; }
+  .btn-ghost:hover { background: var(--crna); color: var(--gips); }
+  .site-header .btn { min-height: 44px; padding: 0 1.1rem; font-size: .95rem; }
+
+  /* ---------- Hero ---------- */
+  .hero .wrap {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 0 1.5rem;
+    padding-block: clamp(2.5rem, 6vw, 5.5rem);
+    align-items: end;
+  }
+  .hero-text { grid-column: 1 / span 7; }
+  .hero h1 {
+    margin: 0 0 1.75rem;
+    font-size: var(--step-4);
+    line-height: .88;
+    letter-spacing: -0.01em;
+    font-weight: 850;
+    font-variation-settings: 'wdth' 62;
+    text-wrap: balance;
+  }
+  .hero .lead { margin: 0 0 2.25rem; max-width: 34em; font-size: var(--step-1); line-height: 1.55; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .hero-floor {
+    margin: 0;
+    grid-column: 8 / span 5;
+    aspect-ratio: 4 / 5;
+    position: relative;
+    background: var(--estrih);
+  }
+  .hero-floor svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .hero-floor figcaption {
+    position: absolute; left: 0; bottom: 0; transform: translateY(100%);
+    padding-top: .6rem; font-size: .85rem; color: var(--nivelir);
+  }
+
+  /* ---------- Slojevi ---------- */
+  .layers { background: var(--wenge); color: var(--gips); margin-top: 4rem; }
+  .layers-intro { padding-block: clamp(4rem, 8vw, 7rem) 2rem; display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+  .layers-intro h2 {
+    grid-column: 1 / span 7; margin: 0;
+    font-size: var(--step-3); line-height: .95; font-weight: 800;
+    font-variation-settings: 'wdth' 70; text-wrap: balance;
+  }
+  .layers-intro p { grid-column: 8 / span 5; margin: 0; align-self: end; color: var(--estrih); max-width: 32em; }
+
+  .stage { height: 230vh; position: relative; }
+  .stage-inner {
+    position: sticky; top: 0; height: 100vh; min-height: 640px;
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem;
+    align-items: center;
+  }
+
+  .layers-left { grid-column: 1 / span 5; }
+  .layer-list { list-style: none; margin: 0; padding: 0; position: relative; }
+  .layer-list::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: rgba(239,239,236,.18);
+  }
+  .layer-btn {
+    display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; align-items: baseline;
+    width: 100%; text-align: left; cursor: pointer;
+    background: none; border: 0; color: inherit; font: inherit;
+    padding: .55rem 0 .55rem 1.25rem; position: relative;
+    min-height: 44px;
+  }
+  .layer-btn::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--hrast);
+    transform: scaleY(0); transition: transform .25s ease;
+  }
+  .layer-btn[aria-pressed="true"]::before { transform: scaleY(1); }
+  .layer-btn .depth { font-size: .9rem; color: var(--nivelir); font-variant-numeric: tabular-nums; }
+  .layer-btn .name { font-weight: 700; font-size: 1.1rem; }
+  .layer-btn[aria-pressed="true"] .name { color: var(--hrast-svijetli); }
+  .layer-btn[aria-pressed="true"] .depth { color: var(--estrih); }
+  .layer-btn:hover .name { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--hrast); }
+
+  .layer-detail { margin-top: 1.5rem; min-height: 17rem; }
+  .layer-detail article[hidden] { display: none; }
+  .layer-detail .big {
+    display: block; margin: 0 0 .5rem;
+    font-size: clamp(3.2rem, 6vw, 5.2rem); line-height: .9; font-weight: 900;
+    font-variation-settings: 'wdth' 62;
+    color: transparent; -webkit-text-stroke: 1.5px var(--hrast-svijetli);
+    font-variant-numeric: tabular-nums;
+  }
+  .layer-detail h3 { margin: 0 0 .4rem; font-size: var(--step-2); line-height: 1.15; font-weight: 750; font-variation-settings: 'wdth' 85; }
+  .layer-detail p { margin: 0 0 .9rem; color: var(--estrih); max-width: 36em; }
+  .layer-detail a { color: var(--hrast-svijetli); font-weight: 700; text-underline-offset: 4px; }
+
+  .stack { grid-column: 6 / span 7; width: 100%; max-height: 92vh; }
+  .stack svg { width: 100%; height: auto; max-height: 92vh; display: block; overflow: visible; }
+  .stack .layer { transform: translateY(calc(var(--gap) * var(--i) * -1)); transition: filter .25s; cursor: pointer; }
+  .stack.has-active .layer { filter: saturate(.3) brightness(.62); }
+  .stack.has-active .layer.is-active, .stack .layer:hover { filter: none; }
+
+  /* scroll-driven raslojavanje */
+  .stack { --gap: 0px; }
+  @supports (animation-timeline: view()) {
+    .stage { view-timeline-name: --stage; }
+    .stack {
+      animation: explode linear both;
+      animation-timeline: --stage;
+      animation-range: contain 0% contain 55%;
+    }
+  }
+  @supports not (animation-timeline: view()) {
+    .stack { --gap: 46px; }
+    .stage { height: auto; }
+    .stage-inner { position: static; height: auto; padding-block: 3rem 5rem; }
+  }
+  @keyframes explode { from { --gap: 0px; } to { --gap: 46px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stack { animation: none !important; --gap: 46px; }
+    .stage { height: auto; }
+    .stage-inner { position: static; height: auto; padding-block: 3rem 5rem; }
+    .layer-btn::before, .btn { transition: none; }
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 900px) {
+    .nav { display: none; }
+    .site-header .btn { margin-left: auto; }
+    .hero .wrap, .layers-intro, .stage-inner { grid-template-columns: 1fr; }
+    .hero-text, .hero-floor, .layers-intro h2, .layers-intro p, .layers-left, .stack { grid-column: 1; }
+    .hero-floor {
+    margin: 0; aspect-ratio: 16 / 10; margin-top: 2.5rem; }
+    .stage { height: auto; }
+    .stage-inner { position: static; height: auto; min-height: 0; padding-block: 1rem 4rem; }
+    .stack { animation: none !important; --gap: 34px; order: -1; max-height: none; }
+    .layer-btn { grid-template-columns: 5.5rem 1fr; }
+    .layer-detail { min-height: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="Podovi GJP, naslovna"><img src="logo.jpg" alt="" width="616" height="547"></a>
+    <nav class="nav" aria-label="Glavna navigacija">
+      <a href="#usluge">Usluge</a>
+      <a href="#reference">Reference</a>
+      <a href="#savjeti">Savjeti</a>
+      <a href="#o-nama">O nama</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <a class="btn btn-primary" href="#ponuda">Zatraži ponudu</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-text">
+        <h1>Stručnjaci za podne obloge</h1>
+        <p class="lead">Izvodimo kompletan spektar podopolagačkih radova za poslovne, javne i privatne prostore diljem Hrvatske, uz poseban fokus na LVT podne obloge, tepihe, PVC podove u roli i epoksidne sustave.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#ponuda">Zatraži ponudu</a>
+          <a class="btn btn-ghost" href="#reference">Pogledaj reference</a>
+        </div>
+      </div>
+      <figure class="hero-floor">
+        <svg id="hero-svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="LVT pod u uzorku riblje kosti"></svg>
+        <figcaption>Mjesto za fotografiju izvedenog projekta</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="layers" aria-labelledby="slojevi-naslov">
+    <div class="wrap layers-intro">
+      <h2 id="slojevi-naslov">Pod je onoliko dobar koliko i ono ispod njega.</h2>
+      <p>Od kvalitetne pripreme podloge do precizne ugradnje i završnih detalja, svakom projektu pristupamo profesionalno, pouzdano i s posebnom pažnjom prema kvaliteti izvedbe.</p>
+    </div>
+
+    <div class="stage">
+      <div class="wrap stage-inner">
+        <div class="layers-left">
+          <ol class="layer-list" id="layer-list"></ol>
+          <div class="layer-detail" id="layer-detail" aria-live="polite"></div>
+        </div>
+        <div class="stack has-active" id="stack">
+          <svg id="stack-svg" viewBox="0 0 620 720" role="img" aria-label="Presjek poda: LVT obloga, ljepilo, nivelir masa, estrih s podnim grijanjem, toplinska izolacija i betonska podloga"></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (name, attrs = {}, parent) => {
+    const n = document.createElementNS(NS, name);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  };
+
+  // deterministički "random" da uzorak izgleda isto pri svakom učitavanju
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const oak = ['#B88A57', '#A87B4A', '#C29563', '#9E7244', '#B4844F', '#C8A06E'];
+
+  // Riblja kost: planke L x w, rešetka t1=(w,w), t2=(L,-L), zarotirano za 45°
+  function herringbone(parent, size, w, L) {
+    const g = el('g', { transform: `rotate(45 ${size / 2} ${size / 2})` }, parent);
+    const iMax = Math.ceil((size * 2) / w);
+    const jMax = Math.ceil((size * 2) / L) + 2;
+    for (let i = -iMax; i < iMax; i++) {
+      for (let j = -jMax; j < jMax; j++) {
+        const x = i * w + j * L;
+        const y = i * w - j * L;
+        if (x < -size || x > size * 2 || y < -size || y > size * 2) continue;
+        el('rect', { x, y, width: L, height: w, fill: oak[Math.floor(rnd() * oak.length)], stroke: '#6E4B2A', 'stroke-width': w * 0.06 }, g);
+        el('rect', { x: x + L, y: y - L + w, width: w, height: L, fill: oak[Math.floor(rnd() * oak.length)], stroke: '#6E4B2A', 'stroke-width': w * 0.06 }, g);
+      }
+    }
+    return g;
+  }
+
+  /* ---------- Hero pod ---------- */
+  const hero = document.getElementById('hero-svg');
+  const heroClip = el('clipPath', { id: 'hero-clip' }, el('defs', {}, hero));
+  el('rect', { width: 400, height: 500 }, heroClip);
+  herringbone(el('g', { 'clip-path': 'url(#hero-clip)' }, hero), 500, 22, 88);
+  // blagi svjetlosni prijelaz preko poda
+  const lg = el('linearGradient', { id: 'hero-light', x1: 0, y1: 0, x2: 1, y2: 1 }, hero.querySelector('defs'));
+  el('stop', { offset: 0, 'stop-color': '#fff', 'stop-opacity': .18 }, lg);
+  el('stop', { offset: .6, 'stop-color': '#fff', 'stop-opacity': 0 }, lg);
+  el('stop', { offset: 1, 'stop-color': '#000', 'stop-opacity': .18 }, lg);
+  el('rect', { width: 400, height: 500, fill: 'url(#hero-light)' }, hero);
+
+  /* ---------- Slojevi ---------- */
+  const layers = [
+    { id: 'lvt', name: 'LVT podna obloga', depth: '0–2,3 mm', big: '2,3 mm', h: 9, side: ['#8A6238', '#A57849'],
+      title: 'LVT u uzorku riblje kosti',
+      text: 'Završni sloj, jedini koji se vidi. Lijepljena LVT obloga odlično radi s podnim grijanjem, ali uzorak riblje kosti traži iznimno ravnu podlogu jer se svaka neravnina ispod nje kasnije ocrta.',
+      link: ['LVT vinil podovi', '#usluge/lvt-vinil'] },
+    { id: 'ljepilo', name: 'Ljepilo', depth: '2,3–3,3 mm', big: '1 mm', h: 6, side: ['#B5A684', '#CDBE9B'],
+      title: 'Elastično ljepilo za LVT',
+      text: 'Nanosi se nazubljenom gladilicom A2 ili B1. Prava količina ljepila znači da obloga ne odskače, spojevi ne pucaju i pod mirno podnosi promjene temperature.',
+      link: ['LVT vinil podovi', '#usluge/lvt-vinil'] },
+    { id: 'nivelir', name: 'Nivelir masa', depth: '3,3–8,3 mm', big: '5 mm', h: 12, side: ['#A9A59E', '#C4C0B9'],
+      title: 'Samorazlijevajuća masa za izravnavanje',
+      text: 'Sloj u kojem se odlučuje kako će pod izgledati. Niveliramo UZIN masama, među ostalim NC 160 i NC 160 Si, do potpuno ravne i jednako upojne podloge spremne za lijepljenje.',
+      link: ['Priprema podloge', '#usluge/priprema-podloge'] },
+    { id: 'estrih', name: 'Estrih', depth: '8,3–58 mm', big: '5 cm', h: 34, side: ['#77736C', '#8F8B84'],
+      title: 'Cementni estrih',
+      text: 'Prije polaganja mjerimo preostalu vlagu CM metodom. Cementni estrih se okvirno suši tjedan dana po centimetru debljine do 4 cm, a nakon toga znatno sporije. Iznad cijevi grijanja treba barem 3 cm estriha.',
+      link: ['Priprema podloge', '#usluge/priprema-podloge'] },
+    { id: 'grijanje', name: 'Podno grijanje', depth: 'u estrihu', big: 'u estrihu', h: 10, side: ['#6E6A64', '#86827B'],
+      title: 'Cijevi podnog grijanja',
+      text: 'Cijevi su ugrađene u estrih. Kad je ispod poda grijanje, biramo obloge i ljepila koja podnose stalne promjene temperature, a estrih prije polaganja prolazi protokol grijanja.',
+      link: ['Koji pod za podno grijanje', '#savjeti/koji-pod-za-podno-grijanje'] },
+    { id: 'xps', name: 'Stirodur (XPS)', depth: 'prema projektu', big: 'XPS', h: 26, side: ['#3F78A6', '#5590BE'],
+      title: 'Toplinska izolacija',
+      text: 'Ploče ekstrudiranog polistirena ispod estriha. Debljinu i vrstu određuje projekt zgrade.',
+      link: null },
+    { id: 'beton', name: 'Betonska podloga', depth: 'nosiva ploča', big: 'beton', h: 40, side: ['#5D5A55', '#76736D'],
+      title: 'Nosiva konstrukcija',
+      text: 'Armiranobetonska ploča na kojoj počiva cijeli sustav. Sve iznad nje mora biti izvedeno redom i u pravim debljinama.',
+      link: null },
+  ];
+
+  const svg = document.getElementById('stack-svg');
+  const defs = el('defs', {}, svg);
+  const cx = 310, R = 250, S = 100, baseBottom = 700;
+  // izometrijska matrica: jedinični kvadrat S x S -> romb gornje plohe
+  const iso = (y) => `matrix(${R / S} ${R / (2 * S)} ${-R / S} ${R / (2 * S)} ${cx} ${y})`;
+
+  const clip = el('clipPath', { id: 'unit' }, defs);
+  el('rect', { width: S, height: S }, clip);
+
+  function topFace(g, layer, y) {
+    const f = el('g', { transform: iso(y) }, g);
+    const c = el('g', { 'clip-path': 'url(#unit)' }, f);
+    seed = 11;
+    switch (layer.id) {
+      case 'lvt':
+        herringbone(c, S, 4.2, 16.8);
+        break;
+      case 'ljepilo':
+        el('rect', { width: S, height: S, fill: '#DCCDA9' }, c);
+        for (let k = 1; k < S; k += 3.2) el('line', { x1: 0, y1: k, x2: S, y2: k, stroke: '#BBAA82', 'stroke-width': 1.2 }, c);
+        break;
+      case 'nivelir':
+        el('rect', { width: S, height: S, fill: '#CFCBC4' }, c);
+        for (let k = 0; k < 160; k++) el('circle', { cx: rnd() * S, cy: rnd() * S, r: .35, fill: '#B9B5AE' }, c);
+        break;
+      case 'estrih':
+      case 'beton': {
+        el('rect', { width: S, height: S, fill: layer.id === 'estrih' ? '#A29E97' : '#8C8882' }, c);
+        for (let k = 0; k < 420; k++) el('circle', { cx: rnd() * S, cy: rnd() * S, r: .3 + rnd() * .9, fill: rnd() > .5 ? '#6F6B65' : '#BDB9B2', opacity: .8 }, c);
+        break;
+      }
+      case 'grijanje': {
+        el('rect', { width: S, height: S, fill: '#9C9891' }, c);
+        for (let k = 10; k < S; k += 10) {
+          el('line', { x1: k, y1: 0, x2: k, y2: S, stroke: '#C0473A', 'stroke-width': .35, opacity: .7 }, c);
+          el('line', { x1: 0, y1: k, x2: S, y2: k, stroke: '#C0473A', 'stroke-width': .35, opacity: .7 }, c);
+        }
+        let d = 'M 8 6';
+        for (let k = 0; k < 6; k++) {
+          const yy = 6 + k * 15;
+          d += k % 2 === 0 ? ` L 88 ${yy} A 7.5 7.5 0 0 1 88 ${yy + 15}` : ` L 12 ${yy} A 7.5 7.5 0 0 0 12 ${yy + 15}`;
+        }
+        el('path', { d, fill: 'none', stroke: '#7A1F17', 'stroke-width': 3.6, 'stroke-linecap': 'round' }, c);
+        el('path', { d, fill: 'none', stroke: '#D6372A', 'stroke-width': 2.6, 'stroke-linecap': 'round' }, c);
+        break;
+      }
+      case 'xps':
+        el('rect', { width: S, height: S, fill: '#5E9DCB' }, c);
+        for (let k = 0; k < 120; k++) el('circle', { cx: rnd() * S, cy: rnd() * S, r: .4, fill: '#79B0D8' }, c);
+        break;
+    }
+    el('rect', { width: S, height: S, fill: 'none', stroke: 'rgba(0,0,0,.35)', 'stroke-width': .4 }, f);
+  }
+
+  // crtanje od dna prema vrhu; y = vrh gornje plohe kad je sve složeno
+  let y = baseBottom - R;
+  const ordered = [...layers].reverse();
+  ordered.forEach((layer, i) => {
+    y -= layer.h;
+    const g = el('g', { class: 'layer', 'data-id': layer.id, style: `--i:${i}` }, svg);
+    const h = layer.h;
+    el('polygon', { points: `${cx - R},${y + R / 2} ${cx},${y + R} ${cx},${y + R + h} ${cx - R},${y + R / 2 + h}`, fill: layer.side[0] }, g);
+    el('polygon', { points: `${cx},${y + R} ${cx + R},${y + R / 2} ${cx + R},${y + R / 2 + h} ${cx},${y + R + h}`, fill: layer.side[1] }, g);
+    topFace(g, layer, y);
+  });
+
+  /* ---------- Popis i detalji ---------- */
+  const list = document.getElementById('layer-list');
+  const detail = document.getElementById('layer-detail');
+  const stack = document.getElementById('stack');
+
+  layers.forEach((layer) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<button class="layer-btn" type="button" aria-pressed="false" aria-controls="sloj-${layer.id}" data-id="${layer.id}">
+        <span class="depth">${layer.depth}</span><span class="name">${layer.name}</span></button>`;
+    list.appendChild(li);
+
+    const art = document.createElement('article');
+    art.id = `sloj-${layer.id}`;
+    art.hidden = true;
+    art.innerHTML = `<span class="big" aria-hidden="true">${layer.big}</span>
+      <h3>${layer.title}</h3><p>${layer.text}</p>
+      ${layer.link ? `<a href="${layer.link[1]}">${layer.link[0]}</a>` : ''}`;
+    detail.appendChild(art);
+  });
+
+  function activate(id) {
+    list.querySelectorAll('.layer-btn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
+    detail.querySelectorAll('article').forEach((a) => { a.hidden = a.id !== `sloj-${id}`; });
+    svg.querySelectorAll('.layer').forEach((g) => g.classList.toggle('is-active', g.dataset.id === id));
+  }
+
+  list.addEventListener('click', (e) => {
+    const b = e.target.closest('.layer-btn');
+    if (b) activate(b.dataset.id);
+  });
+  svg.addEventListener('click', (e) => {
+    const g = e.target.closest('.layer');
+    if (g) activate(g.dataset.id);
+  });
+
+  activate('lvt');
+})();
+</script>
+</body>
+</html>
