@@ -40,3 +40,15 @@ Draft reference (`draft: true`) vide se samo uz `PUBLIC_DRAFTOVI=1` (testovi, lo
 1. Repo na GitHub, u Netlifyju „Import from Git”, base directory `site` (build i publish su u `site/netlify.toml`).
 2. Forms → uključiti detekciju formi; Notifications → e-mail obavijest za formu `radni-nalog` na kumov e-mail.
 3. Domena → usmjeriti DNS na Netlify; HTTPS se uključuje automatski.
+
+## Lighthouse (mobitel, produkcijski build, 19. 10. 2026.)
+
+| Stranica | Performance | Accessibility | Best practices | SEO | LCP | CLS |
+|---|---|---|---|---|---|---|
+| `/` | 99 | 100 | 100 | 100 | 1,8 s | 0 |
+| `/usluge/pvc-podovi/` | 100 | 100 | 100 | 100 | 1,4 s | 0 |
+| `/zatrazi-ponudu/` | 100 | 100 | 100 | 100 | 1,7 s | 0 |
+
+JS gzip: naslovna 12 KB, forma 16 KB. Font 62 KB (dva subseta Archiva).
+
+Napomena: Astro 7 dopušta samo jedan `astro preview` odjednom — prije `npm run e2e` ugasiti preview `gjp-preview` (port 4324).
