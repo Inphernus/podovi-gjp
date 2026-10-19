@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* ---------- Font (self-hosted subset, vidi scripts/subset-font.mjs) ---------- */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  src: url('/fonts/archivo-latin.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+2013-2014, U+2018-201E, U+2022, U+2026, U+20AC, U+2190-2193;
+}
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  src: url('/fonts/archivo-latin-ext.woff2') format('woff2-variations');
+  unicode-range: U+0100-017F;
+}
+
+/* ---------- Tokeni (specifikacija §6.2) ---------- */
+:root {
+  --crna: #000000;
+  --wenge: #2B2420;
+  --hrast: #A8743F;
+  --hrast-svijetli: #C99A66;
+  --estrih: #D6D2CB;
+  --gips: #EFEFEC;
+  --nivelir: #7D7972;
+
+  --background: var(--gips);
+  --foreground: var(--crna);
+  --border: var(--estrih);
+  --primary: var(--hrast);
+  --primary-foreground: var(--crna);
+  --muted: var(--estrih);
+  --muted-foreground: var(--nivelir);
+  --ring: var(--hrast);
+}
+
+.dark-section {
+  --background: var(--wenge);
+  --foreground: var(--gips);
+  --border: rgb(239 239 236 / 0.18);
+  --primary: var(--hrast-svijetli);
+  --muted-foreground: var(--estrih);
+  --ring: var(--hrast-svijetli);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-ring: var(--ring);
+  --color-crna: var(--crna);
+  --color-wenge: var(--wenge);
+  --color-hrast: var(--hrast);
+  --color-hrast-svijetli: var(--hrast-svijetli);
+  --color-estrih: var(--estrih);
+  --color-gips: var(--gips);
+  --color-nivelir: var(--nivelir);
+
+  --font-sans: 'Archivo', system-ui, sans-serif;
+}
+
+/* ---------- Osnova i tipografija (§6.3) ---------- */
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-stretch: 100%;
+  }
+  h1, h2, h3 {
+    font-weight: 800;
+    font-stretch: 66%;
+    line-height: 0.95;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+.wrap {
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+}
