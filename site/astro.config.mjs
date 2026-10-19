@@ -7,6 +7,6 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://podovi-gjp.hr',
   trailingSlash: 'always',
-  integrations: [react(), sitemap()],
+  integrations: [react(), sitemap({ filter: (page) => !page.includes('/hvala/') })],
   vite: { plugins: [tailwindcss()] },
 });

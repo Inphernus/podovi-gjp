@@ -1,11 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { businessSchema, websiteSchema } from '../lib/schema';
+
+const usluge = await getCollection('usluge');
+const jsonLd = [businessSchema(usluge.map((u) => u.data.naslov)), websiteSchema()];
 ---
 
 <BaseLayout
   title="Stručnjaci za podne obloge"
   description="Podopolagački radovi za poslovne, javne i privatne prostore diljem Hrvatske: LVT podne obloge, tepisi, PVC podovi u roli i epoksidni sustavi."
   canonicalPath="/"
+  jsonLd={jsonLd}
 >
   <main class="wrap">
     <h1>Stručnjaci za podne obloge</h1>
