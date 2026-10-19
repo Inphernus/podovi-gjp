@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/astro/Breadcrumbs.astro';
+import CtaTraka from '../../components/astro/CtaTraka.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { GRUPE } from '../../content.config';
+
+const usluge = (await getCollection('usluge')).sort((a, b) => a.data.redoslijed - b.data.redoslijed);
+const NAZIV: Record<(typeof GRUPE)[number], string> = {
+  priprema: 'Priprema podloge',
+  elasticne: 'Elastične podne obloge',
+  tekstilne: 'Tekstilne podne obloge',
+  laminat: 'Laminat',
+  tehnicki: 'Tehnički podovi',
+  epoksid: 'Epoksidni i poliuretanski sustavi',
+  zavrsni: 'Završni radovi',
+};
+const grupe = GRUPE.map((g) => ({ g, naziv: NAZIV[g], usluge: usluge.filter((u) => u.data.grupa === g) })).filter((x) => x.usluge.length);
+const putanja = [
+  { naziv: 'Naslovna', path: '/' },
+  { naziv: 'Usluge', path: '/usluge/' },
+];
+---
+
+<BaseLayout
+  title="Podopolagački radovi"
+  description="Ugradnja podnih obloga za poslovne i javne objekte: priprema podloge, PVC, LVT, linoleum, guma, tepisi, laminat, dupli podovi, epoksid i završni radovi."
+  canonicalPath="/usluge/"
+  jsonLd={[breadcrumbSchema(putanja)]}
+>
+  <Breadcrumbs items={putanja} />
+  <header class="wrap head">
+    <h1>Podopolagački radovi</h1>
+    <p class="lead">
+      Ugrađujemo podne obloge za poslovne, javne i privatne prostore diljem Hrvatske, od pripreme podloge do završnih
+      radova. Svaki sustav izvodimo prema uputama proizvođača i s mjerenjem podloge prije polaganja.
+    </p>
+  </header>
+
+  <div class="wrap grupe">
+    {grupe.map(({ g, naziv, usluge }, i) => (
+      <section aria-labelledby={`g-${g}`}>
+        <h2 id={`g-${g}`}><span aria-hidden="true">{i + 1}</span>{naziv}</h2>
+        <ul>
+          {usluge.map((u) => (
+            <li>
+              <a href={`/usluge/${u.id}/`}>{u.data.naslov}</a>
+              <p>{u.data.metaOpis}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+  <CtaTraka />
+</BaseLayout>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 4rem) 2rem; }
+  h1 { margin: 0 0 1.25rem; font-size: clamp(2.6rem, 6.5vw, 5.6rem); font-stretch: 62%; }
+  .lead { margin: 0; font-size: 1.3rem; line-height: 1.5; max-width: 36em; }
+  .grupe { padding-bottom: 4rem; }
+  section {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem;
+    padding-block: 2rem; border-top: 1px solid var(--border);
+  }
+  h2 { grid-column: 1 / span 4; margin: 0; font-size: 1.8rem; font-stretch: 75%; line-height: 1.1; display: flex; gap: 0.75rem; }
+  h2 span { color: transparent; -webkit-text-stroke: 1px var(--crna); font-stretch: 62%; }
+  ul { grid-column: 5 / span 8; list-style: none; margin: 0; padding: 0; }
+  li + li { margin-top: 1.25rem; }
+  li a { font-size: 1.35rem; font-weight: 800; font-stretch: 85%; color: inherit; text-decoration-line: underline; text-decoration-color: var(--primary); text-underline-offset: 5px; text-decoration-thickness: 2px; }
+  li p { margin: 0.25rem 0 0; max-width: 40em; }
+  @media (max-width: 900px) {
+    section { grid-template-columns: minmax(0, 1fr); }
+    h2, ul { grid-column: 1; }
+  }
+</style>

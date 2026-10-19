@@ -1,7 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 // Taskovi 3–11 dodaju svoje rute u ovaj niz
-export const rute = ['/'];
+export const rute = [
+  '/',
+  '/usluge/',
+  ...['priprema-podloge', 'pvc-podovi', 'lvt-vinil', 'linoleum', 'gumeni-podovi', 'bolon-pleteni-vinil', 'tepih-ploce',
+    'tepih-u-roli', 'tepih-na-gripere', 'laminat', 'dupli-podovi', 'epoksidni-podovi', 'zavrsni-radovi'].map((s) => `/usluge/${s}/`),
+];
 
 for (const r of rute) {
   test(`osnove ${r}`, async ({ page }) => {

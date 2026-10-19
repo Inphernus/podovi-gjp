@@ -1,0 +1,94 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/astro/Breadcrumbs.astro';
+import Faq from '../../components/astro/Faq.astro';
+import CtaTraka from '../../components/astro/CtaTraka.astro';
+import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
+import { ponudaHref } from '../../lib/obloge';
+
+export async function getStaticPaths() {
+  const usluge = await getCollection('usluge');
+  return usluge.map((u) => ({ params: { slug: u.id }, props: { usluga: u, sve: usluge } }));
+}
+
+const { usluga, sve } = Astro.props;
+const d = usluga.data;
+const { Content } = await render(usluga);
+const putanja = [
+  { naziv: 'Naslovna', path: '/' },
+  { naziv: 'Usluge', path: '/usluge/' },
+  { naziv: d.naslov, path: `/usluge/${usluga.id}/` },
+];
+const srodne = d.srodne.map((s) => sve.find((u) => u.id === s)!).filter(Boolean);
+const jsonLd = [serviceSchema({ naslov: d.naslov, kratakOdgovor: d.kratakOdgovor, slug: usluga.id }), breadcrumbSchema(putanja)];
+---
+
+<BaseLayout title={d.naslov} description={d.metaOpis} canonicalPath={`/usluge/${usluga.id}/`} jsonLd={jsonLd}>
+  <Breadcrumbs items={putanja} />
+
+  <article>
+    <header class="wrap head">
+      <h1>{d.h1}</h1>
+      <p class="lead">{d.kratakOdgovor}</p>
+    </header>
+
+    <div class="wrap body">
+      <div class="prose"><Content /></div>
+    </div>
+
+    <section class="wrap pn" aria-label="Prednosti i nedostaci">
+      <div>
+        <h2>Prednosti</h2>
+        <ul>{d.prednosti.map((p) => <li>{p}</li>)}</ul>
+      </div>
+      <div>
+        <h2>Nedostaci</h2>
+        <ul>{d.nedostaci.map((p) => <li>{p}</li>)}</ul>
+      </div>
+    </section>
+  </article>
+
+  <Faq pitanja={d.faq} naslov="Česta pitanja" />
+
+  <nav class="wrap srodne" aria-labelledby="srodne-naslov" data-srodne>
+    <h2 id="srodne-naslov">Srodne usluge</h2>
+    <ul>{srodne.map((u) => <li><a href={`/usluge/${u.id}/`}>{u.data.naslov}</a></li>)}</ul>
+  </nav>
+
+  <CtaTraka href={ponudaHref(usluga.id)} />
+</BaseLayout>
+
+<style>
+  .head {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem;
+    padding-block: clamp(2rem, 5vw, 4rem) 2rem;
+  }
+  h1 { grid-column: 1 / span 9; margin: 0; font-size: clamp(2.6rem, 6.5vw, 5.6rem); font-stretch: 62%; }
+  .lead { grid-column: 1 / span 7; margin: 0; font-size: 1.3rem; line-height: 1.5; max-width: 36em; }
+  .body { padding-block: 1rem 3rem; }
+  .prose { max-width: 42em; }
+  .prose :global(h2) { font-size: 1.9rem; font-stretch: 75%; margin: 2.5rem 0 0.75rem; line-height: 1.1; }
+  .prose :global(p) { margin: 0 0 1rem; }
+  .pn {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 3rem;
+    padding-block: 2rem 1rem; border-top: 1px solid var(--border);
+  }
+  .pn h2 { font-size: 1.9rem; font-stretch: 75%; margin: 0 0 1rem; }
+  .pn ul { margin: 0; padding: 0; list-style: none; }
+  .pn li { padding: 0.75rem 0 0.75rem 1.5rem; border-top: 1px solid var(--border); position: relative; }
+  .pn div:first-child li::before, .pn div:last-child li::before {
+    position: absolute; left: 0; top: 0.75rem; font-weight: 800; color: var(--hrast);
+  }
+  .pn div:first-child li::before { content: '+'; }
+  .pn div:last-child li::before { content: '−'; color: var(--nivelir); }
+  .srodne { padding-block: 0 4rem; }
+  .srodne h2 { font-size: 1.9rem; font-stretch: 75%; margin: 0 0 1rem; }
+  .srodne ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; }
+  .srodne a { display: inline-block; padding-block: 0.5rem; font-weight: 700; color: inherit; text-decoration-line: underline; text-decoration-color: var(--primary); text-underline-offset: 5px; text-decoration-thickness: 2px; }
+  @media (max-width: 900px) {
+    .head { grid-template-columns: minmax(0, 1fr); }
+    h1, .lead { grid-column: 1; }
+    .pn { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
