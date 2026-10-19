@@ -1,0 +1,55 @@
+---
+import { faqSchema } from '../../lib/schema';
+
+interface Props {
+  pitanja: { pitanje: string; odgovor: string }[];
+  naslov?: string;
+}
+
+const { pitanja, naslov = 'Česta pitanja' } = Astro.props;
+const ld = JSON.stringify(faqSchema(pitanja));
+---
+
+<section class="faq" aria-labelledby="faq-naslov" data-faq>
+  <div class="wrap grid">
+    <h2 id="faq-naslov">{naslov}</h2>
+    <div class="list">
+      {pitanja.map((p) => (
+        <details>
+          <summary>{p.pitanje}</summary>
+          <p>{p.odgovor}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={ld} />
+</section>
+
+<style>
+  .grid {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem;
+    padding-block: clamp(4rem, 8vw, 6rem);
+  }
+  h2 { grid-column: 1 / span 4; margin: 0; font-size: clamp(2.2rem, 4.5vw, 3.6rem); }
+  .list { grid-column: 5 / span 8; }
+  details { border-top: 1px solid var(--border); }
+  details:last-child { border-bottom: 1px solid var(--border); }
+  summary {
+    display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+    min-height: 56px; padding-block: 0.75rem; cursor: pointer; list-style: none;
+    font-size: 1.15rem; font-weight: 700;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: ''; flex: none; width: 14px; height: 14px;
+    background: linear-gradient(var(--primary), var(--primary)) center / 100% 2px no-repeat,
+      linear-gradient(var(--primary), var(--primary)) center / 2px 100% no-repeat;
+    transition: transform 0.2s ease;
+  }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { margin: 0 0 1.25rem; max-width: 44em; }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    h2, .list { grid-column: 1; }
+  }
+</style>

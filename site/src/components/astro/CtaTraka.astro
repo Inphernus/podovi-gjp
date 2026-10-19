@@ -1,0 +1,37 @@
+---
+interface Props {
+  naslov?: string;
+  tekst?: string;
+  href?: string;
+}
+
+const {
+  naslov = 'Imate projekt?',
+  tekst = 'Pošaljite nam radni nalog s osnovnim podacima o prostoru. Ponudu šaljemo u roku 48 sati od izlaska na teren.',
+  href = '/zatrazi-ponudu/',
+} = Astro.props;
+---
+
+<section class="cta">
+  <div class="wrap grid">
+    <h2>{naslov}</h2>
+    <p>{tekst}</p>
+    <a class="btn btn-secondary" href={href}>Zatraži ponudu</a>
+  </div>
+</section>
+
+<style>
+  .cta { background: var(--hrast); color: var(--crna); }
+  .grid {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem; align-items: end;
+    padding-block: clamp(3rem, 6vw, 4.5rem);
+  }
+  h2 { grid-column: 1 / span 5; margin: 0; font-size: clamp(2.2rem, 4.5vw, 3.6rem); }
+  p { grid-column: 6 / span 4; margin: 0; }
+  .btn { grid-column: 10 / span 3; justify-self: end; }
+  .btn-secondary:hover { background: var(--crna); color: var(--hrast); }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    h2, p, .btn { grid-column: 1; justify-self: start; }
+  }
+</style>

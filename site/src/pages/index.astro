@@ -3,11 +3,38 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/astro/Hero.astro';
 import ObjektiStrip from '../components/astro/ObjektiStrip.astro';
 import Presjek from '../components/astro/Presjek.astro';
+import UslugeSekcija from '../components/astro/UslugeSekcija.astro';
+import Proces from '../components/astro/Proces.astro';
+import Faq from '../components/astro/Faq.astro';
+import CtaTraka from '../components/astro/CtaTraka.astro';
 import { getCollection } from 'astro:content';
 import { businessSchema, websiteSchema } from '../lib/schema';
 
 const usluge = await getCollection('usluge');
 const jsonLd = [businessSchema(usluge.map((u) => u.data.naslov)), websiteSchema()];
+
+const pitanja = [
+  {
+    pitanje: 'Radite li u cijeloj Hrvatskoj?',
+    odgovor: 'Da. Radimo poslovne, javne i privatne objekte diljem Hrvatske, uključujući Dalmaciju, Istru, Slavoniju i otoke. Lokaciju, kat i pristup navodite u radnom nalogu kako bi ponuda odmah uključila logistiku.',
+  },
+  {
+    pitanje: 'Koliko brzo dobijem ponudu?',
+    odgovor: 'Ponudu šaljemo u roku 48 sati od izlaska na teren. Ako uz upit priložite troškovnik ili nacrt, ponudu često možemo pripremiti i bez izlaska.',
+  },
+  {
+    pitanje: 'Zašto je priprema podloge zasebna stavka?',
+    odgovor: 'Kvaliteta gotovog poda gotovo je u potpunosti određena podlogom. Niveliranje, sanaciju pukotina i prajmiranje navodimo zasebno da se ne bi izostavili iz troškovnika, jer upravo oni sprječavaju mjehuriće, odvajanje obloge i pucanje spojeva.',
+  },
+  {
+    pitanje: 'Kada se smije polagati pod na novi estrih?',
+    odgovor: 'Kad preostala vlaga izmjerena CM metodom padne ispod granice koju propisuje proizvođač obloge. Cementni estrih se okvirno suši tjedan dana po centimetru debljine do 4 cm, a nakon toga znatno sporije.',
+  },
+  {
+    pitanje: 'Radite li i stambene prostore?',
+    odgovor: 'Radimo, posebno veće stambene projekte i zahtjevnije obloge poput LVT-a u ribljoj kosti. Fokus nam je na poslovnim i javnim objektima, pa za manje stanove rok može biti dulji.',
+  },
+];
 ---
 
 <BaseLayout
@@ -19,4 +46,8 @@ const jsonLd = [businessSchema(usluge.map((u) => u.data.naslov)), websiteSchema(
   <Hero />
   <ObjektiStrip />
   <Presjek />
+  <UslugeSekcija />
+  <Proces />
+  <Faq pitanja={pitanja} />
+  <CtaTraka />
 </BaseLayout>

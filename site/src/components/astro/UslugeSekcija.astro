@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import HoverExpandGallery, { type GalerijaStavka } from '../ui/hover-expand-gallery';
+
+const sve = (await getCollection('usluge')).sort((a, b) => a.data.redoslijed - b.data.redoslijed);
+
+// Četiri glavna fokusa (specifikacija §7.1). Dok nema fotografija, podloga je materijalna tekstura u CSS-u.
+const galerija: GalerijaStavka[] = [
+  {
+    naslov: 'LVT vinil podovi',
+    meta: 'daska, riblja kost, chevron',
+    opis: 'Izgled drva i kamena s otpornošću na vlagu. Lijepljeno ili loose-lay, u svim formatima.',
+    href: '/usluge/lvt-vinil/',
+    linkTekst: 'LVT vinil podovi',
+    podloga: 'repeating-linear-gradient(45deg,#B88A57 0 28px,#A87B4A 28px 30px,#C29563 30px 58px,#9E7244 58px 60px)',
+  },
+  {
+    naslov: 'Tepisi',
+    meta: 'ploče, rola, griperi',
+    opis: 'Tepih ploče za urede, tepih u roli i na gripere za hotele i dvorane. Najbolja akustika od svih obloga.',
+    href: '/usluge/tepih-ploce/',
+    linkTekst: 'Tepih ploče, rola i griperi',
+    podloga: 'repeating-linear-gradient(90deg,#4B4540 0 3px,#544D47 3px 6px), #4B4540',
+  },
+  {
+    naslov: 'PVC podovi u roli',
+    meta: 'vareni spojevi, holkeri',
+    opis: 'Higijenska ploha bez fuga za bolnice, vrtiće i škole, s varenim spojevima i holkerom uz zid.',
+    href: '/usluge/pvc-podovi/',
+    linkTekst: 'PVC podovi u roli',
+    podloga: 'linear-gradient(90deg,transparent 0 49.6%,#7E8C8A 49.6% 50.4%,transparent 50.4%) 0 0/200px 100%, #9DAAA8',
+  },
+  {
+    naslov: 'Epoksidni podovi',
+    meta: 'samolijevni i premazni sustavi',
+    opis: 'Bešavna, kemijski otporna ploha za proizvodnju, skladišta i garaže, s punom pripremom podloge.',
+    href: '/usluge/epoksidni-podovi/',
+    linkTekst: 'Epoksidni podovi',
+    podloga: 'radial-gradient(ellipse at 30% 20%,#C9CCCB 0,#8F9493 60%,#6E7372 100%)',
+  },
+];
+
+const fokusSlugovi = new Set(['lvt-vinil', 'tepih-ploce', 'pvc-podovi', 'epoksidni-podovi']);
+const GRUPA_NAZIV: Record<string, string> = {
+  priprema: 'Priprema',
+  elasticne: 'Elastične obloge',
+  tekstilne: 'Tekstilne obloge',
+  laminat: 'Laminat',
+  tehnicki: 'Tehnički podovi',
+  epoksid: 'Epoksid',
+  zavrsni: 'Završni radovi',
+};
+const ostale = sve.filter((u) => !fokusSlugovi.has(u.id));
+const grupe = [...new Set(ostale.map((u) => u.data.grupa))].map((g) => ({
+  naziv: GRUPA_NAZIV[g],
+  usluge: ostale.filter((u) => u.data.grupa === g),
+}));
+---
+
+<section class="usluge" aria-labelledby="usluge-naslov">
+  <div class="wrap head">
+    <h2 id="usluge-naslov">Usluge</h2>
+    <p>Četiri sustava koja radimo najčešće, a ispod njih sve ostalo što izvodimo, od pripreme podloge do zadnje cokle.</p>
+  </div>
+  <div class="wrap">
+    <HoverExpandGallery client:idle items={galerija} />
+  </div>
+  <div class="wrap ostale" data-usluge-ostale>
+    {grupe.map((g) => (
+      <div>
+        <h3>{g.naziv}</h3>
+        <ul>{g.usluge.map((u) => <li><a href={`/usluge/${u.id}/`}>{u.data.naslov}</a></li>)}</ul>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .usluge { padding-block: clamp(4rem, 8vw, 7rem); }
+  .head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+  .head h2 { grid-column: 1 / span 5; margin: 0; font-size: clamp(2.2rem, 4.5vw, 3.6rem); }
+  .head p { grid-column: 7 / span 6; margin: 0; align-self: end; max-width: 34em; }
+  .ostale {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 2rem 1.5rem; margin-top: 3rem;
+  }
+  h3 { margin: 0 0 0.5rem; font-size: 1rem; font-stretch: 100%; font-weight: 600; color: var(--nivelir); line-height: 1.3; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li a {
+    display: inline-block; padding-block: 0.4rem; color: inherit; font-weight: 700; text-decoration: none;
+    background: linear-gradient(var(--primary), var(--primary)) no-repeat left bottom / 0% 2px;
+    transition: background-size 0.25s ease;
+  }
+  li a:hover, li a:focus-visible { background-size: 100% 2px; }
+  @media (max-width: 900px) {
+    .head { grid-template-columns: minmax(0, 1fr); }
+    .head h2, .head p { grid-column: 1; }
+  }
+</style>
