@@ -1,21 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { rute } from './rute';
 
-// Taskovi 3–11 dodaju svoje rute u ovaj niz
-export const rute = [
-  '/',
-  '/usluge/',
-  '/reference/',
-  '/savjeti/',
-  '/zatrazi-ponudu/',
-  '/hvala/',
-  '/o-nama/',
-  '/kontakt/',
-  '/politika-privatnosti/',
-  '/impressum/',
-  ...['koliko-se-susi-estrih', 'koji-pod-za-podno-grijanje', 'vinil-ili-laminat', 'linoleum-ili-pvc', 'sto-je-holker'].map((s) => `/savjeti/${s}/`),
-  ...['priprema-podloge', 'pvc-podovi', 'lvt-vinil', 'linoleum', 'gumeni-podovi', 'bolon-pleteni-vinil', 'tepih-ploce',
-    'tepih-u-roli', 'tepih-na-gripere', 'laminat', 'dupli-podovi', 'epoksidni-podovi', 'zavrsni-radovi'].map((s) => `/usluge/${s}/`),
-];
 
 for (const r of rute) {
   test(`osnove ${r}`, async ({ page }) => {
