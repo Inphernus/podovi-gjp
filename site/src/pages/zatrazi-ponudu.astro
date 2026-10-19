@@ -18,7 +18,11 @@ const putanja = [
   canonicalPath="/zatrazi-ponudu/"
   jsonLd={[breadcrumbSchema(putanja)]}
 >
-  <script is:inline>document.documentElement.classList.add('js-nalog');</script>
+  <!-- S JS-om se prikazuje interaktivni nalog; ako se island ne pokrene u 5 s (blokiran JS, greška), vraća se obična forma -->
+  <script is:inline>
+    document.documentElement.classList.add('js-nalog');
+    setTimeout(function () { if (!window.__gjpNalog) document.documentElement.classList.remove('js-nalog'); }, 5000);
+  </script>
   <Breadcrumbs items={putanja} />
   <header class="wrap head">
     <h1>Zatražite ponudu</h1>
@@ -29,7 +33,6 @@ const putanja = [
       <RadniNalog client:load telefon={site.telefon} />
     </div>
     <NalogFallback />
-    <script is:inline>if (document.documentElement.classList.contains('js-nalog')) document.querySelector('.nalog-fallback')?.remove();</script>
   </div>
 </BaseLayout>
 
@@ -40,6 +43,7 @@ const putanja = [
   .tijelo { padding-bottom: 5rem; }
   .nalog-app { display: none; }
   :global(.js-nalog) .nalog-app { display: block; }
+  :global(.js-nalog) :global(.nalog-fallback) { display: none; }
   :global(.nalog-korak) { animation: korak-ulaz 0.22s ease-out; }
   @keyframes korak-ulaz { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 </style>

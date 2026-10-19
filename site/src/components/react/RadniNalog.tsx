@@ -36,6 +36,9 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
     setA(pocetni);
     setKorak(nastavi ? spremljeniKorak : pocetniKorak(pocetni));
     setUcitano(true);
+    // Island radi: makni rezervnu formu (inače bi se natpisi duplicirali) i javi stranici da je spreman
+    document.querySelector('.nalog-fallback')?.remove();
+    (window as unknown as { __gjpNalog?: boolean }).__gjpNalog = true;
   }, []);
 
   // Sinkrono nakon izmjene, da ni brzo osvježavanje ne izgubi zadnji odgovor
@@ -60,11 +63,12 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
   const redni = vidljivi.indexOf(korak) + 1;
   const jednoIzbor = def.polja.length === 1 && def.polja[0].tip === 'izbor';
 
-  const postavi = (name: FieldName, v: string) => {
+  // potvrdi = false kad se odabir pomiče strelicama: tada se ne prelazi na sljedeći korak
+  const postavi = (name: FieldName, v: string, potvrdi = true) => {
     const nove = { ...a, [name]: v };
     setA(nove);
     setGreske((g) => ({ ...g, [name]: undefined }));
-    if (jednoIzbor) idiNa(nextStep(korak, nove));
+    if (jednoIzbor && potvrdi) idiNa(nextStep(korak, nove));
   };
 
   // Greške se prikazuju uz polja, a fokus ide na prvo neispravno polje (redom kao u koraku)
@@ -115,7 +119,7 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
     if (p.tip === 'izbor') {
       return (
         <Choicebox key={p.name} id={id} label={p.label} opcije={p.opcije!} value={a[p.name]} greska={greska}
-          vidljivLabel={!jednoIzbor} onChange={(v) => postavi(p.name, v)} />
+          vidljivLabel={!jednoIzbor} onChange={(v, potvrdi) => postavi(p.name, v, potvrdi)} />
       );
     }
     if (p.tip === 'checkbox') {
@@ -180,7 +184,7 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
                 onDragLeave={() => setPovlacenje(false)}
                 onDrop={(e) => { e.preventDefault(); setPovlacenje(false); odaberiDatoteku(e.dataTransfer?.files[0]); }}
               >
-                <input ref={fileRef} id="nalog-prilog" type="file" className="sr-only" accept={PRILOG_EXT.map((x) => `.${x}`).join(',')}
+                <input ref={fileRef} id="nalog-prilog" type="file" className="sr-only" tabIndex={-1} accept={PRILOG_EXT.map((x) => `.${x}`).join(',')}
                   aria-describedby={greske.prilog ? 'nalog-prilog-greska' : 'nalog-prilog-pomoc'}
                   onChange={(e) => odaberiDatoteku(e.currentTarget.files?.[0])} />
                 <button type="button" className="btn btn-secondary btn-sm" onClick={() => fileRef.current?.click()}>Odaberi datoteku</button>

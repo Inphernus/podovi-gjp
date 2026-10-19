@@ -80,6 +80,15 @@ describe('validateStep', () => {
     expect(validateStep('kontakt', { ...kontaktOk, telefon: '12345' }).telefon).toBe('Upišite broj telefona, npr. 091 234 5678.');
   });
 
+  it('telefon prihvaća strane brojeve i 00 oblik', () => {
+    for (const t of ['00385 91 234 5678', '+386 40 123 456', '+49 151 23456789', '0043 664 1234567']) {
+      expect(validateStep('kontakt', { ...kontaktOk, telefon: t }).telefon, t).toBeUndefined();
+    }
+    for (const t of ['0912', '+38', 'abc']) {
+      expect(validateStep('kontakt', { ...kontaktOk, telefon: t }).telefon, t).toBeDefined();
+    }
+  });
+
   it('e-mail mora imati ispravan oblik', () => {
     expect(validateStep('kontakt', { ...kontaktOk, email: 'ana@' }).email).toBe('Upišite ispravnu e-mail adresu.');
   });

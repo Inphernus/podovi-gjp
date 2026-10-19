@@ -42,6 +42,7 @@ test('forma: e-mail bez provjere pravopisa i fokus na prvu grešku', async ({ pa
     }));
   });
   await page.reload();
+  await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
   expect(await page.getByLabel('E-mail').evaluate((el) => (el as HTMLInputElement).spellcheck)).toBe(false);
   await page.getByLabel('Ime i prezime').fill('Ana');
   await page.getByRole('button', { name: 'Pošalji radni nalog' }).click();

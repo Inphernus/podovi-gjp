@@ -32,7 +32,7 @@ const polja = STEPS.flatMap((s) => s.polja);
     ) : (
       <label class="polje">
         {p.label}
-        <input type={p.tip === 'tekst' ? 'text' : p.tip} name={p.name} required={p.obavezno} autocomplete={p.autocomplete} />
+        <input type={p.tip === 'tekst' ? 'text' : p.tip} name={p.name} required={p.obavezno} autocomplete={p.autocomplete} spellcheck={p.tip === 'email' ? 'false' : undefined} />
       </label>
     ),
   )}

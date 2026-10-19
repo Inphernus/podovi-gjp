@@ -193,7 +193,8 @@ export function prefillFromQuery(params: URLSearchParams): Answers {
   return out;
 }
 
-const TELEFON = /^(\+385|0)\d{8,9}$/;
+// Domaći (0…) ili međunarodni (+ ili 00 i pozivni broj) — investitori i izvođači mogu biti iz inozemstva
+const TELEFON = /^(0\d{8,9}|(\+|00)\d{8,15})$/;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const PORUKA: Partial<Record<FieldName, string>> = {

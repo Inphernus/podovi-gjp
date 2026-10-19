@@ -10,7 +10,8 @@ type Props = {
   label: string;
   opcije: readonly ChoiceOpcija[];
   value?: string;
-  onChange: (value: string) => void;
+  /** potvrdi = true za klik/Enter/razmaknicu; false za strelice (samo pomicanje odabira, bez prelaska dalje). */
+  onChange: (value: string, potvrdi: boolean) => void;
   greska?: string;
   /** Prikazati label grupe kao vidljivi podnaslov (višepoljni koraci). */
   vidljivLabel?: boolean;
@@ -24,7 +25,7 @@ export default function Choicebox({ id, label, opcije, value, onChange, greska, 
   const pomakni = (i: number) => {
     const n = (i + opcije.length) % opcije.length;
     refs.current[n]?.focus();
-    onChange(opcije[n].value);
+    onChange(opcije[n].value, false);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, i: number) => {
@@ -52,7 +53,7 @@ export default function Choicebox({ id, label, opcije, value, onChange, greska, 
               role="radio"
               aria-checked={odabran}
               tabIndex={i === fokusIndex ? 0 : -1}
-              onClick={() => onChange(o.value)}
+              onClick={() => onChange(o.value, true)}
               onKeyDown={(e) => onKeyDown(e, i)}
               className={`flex min-h-14 w-full cursor-pointer items-start gap-3 rounded-[2px] border-2 px-4 py-3 text-left transition-colors duration-200 ${
                 odabran ? 'border-primary bg-primary/15' : 'border-border bg-background hover:border-foreground'
