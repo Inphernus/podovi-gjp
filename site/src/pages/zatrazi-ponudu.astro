@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/astro/Breadcrumbs.astro';
+import NalogFallback from '../components/astro/NalogFallback.astro';
+import RadniNalog from '../components/react/RadniNalog';
+import { site } from '../lib/site';
+import { breadcrumbSchema } from '../lib/schema';
+
+const putanja = [
+  { naziv: 'Naslovna', path: '/' },
+  { naziv: 'Zatražite ponudu', path: '/zatrazi-ponudu/' },
+];
+---
+
+<BaseLayout
+  title="Zatražite ponudu"
+  description="Pošaljite radni nalog za podopolagačke radove: vrsta objekta, obloga, površina, podloga i lokacija. Ponuda u roku 48 sati od izlaska na teren."
+  canonicalPath="/zatrazi-ponudu/"
+  jsonLd={[breadcrumbSchema(putanja)]}
+>
+  <script is:inline>document.documentElement.classList.add('js-nalog');</script>
+  <Breadcrumbs items={putanja} />
+  <header class="wrap head">
+    <h1>Zatražite ponudu</h1>
+    <p class="lead">Osam kratkih pitanja o prostoru. Uz pitanja se slaže radni nalog koji dobivamo, a ponudu šaljemo u roku 48 sati od izlaska na teren.</p>
+  </header>
+  <div class="wrap tijelo">
+    <div class="nalog-app">
+      <RadniNalog client:load telefon={site.telefon} />
+    </div>
+    <NalogFallback />
+    <script is:inline>if (document.documentElement.classList.contains('js-nalog')) document.querySelector('.nalog-fallback')?.remove();</script>
+  </div>
+</BaseLayout>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 3.5rem) 1.5rem; }
+  h1 { margin: 0 0 1rem; font-size: clamp(2.6rem, 6.5vw, 5.6rem); font-stretch: 62%; }
+  .lead { margin: 0; font-size: 1.25rem; max-width: 38em; }
+  .tijelo { padding-bottom: 5rem; }
+  .nalog-app { display: none; }
+  :global(.js-nalog) .nalog-app { display: block; }
+  :global(.nalog-korak) { animation: korak-ulaz 0.22s ease-out; }
+  @keyframes korak-ulaz { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+</style>

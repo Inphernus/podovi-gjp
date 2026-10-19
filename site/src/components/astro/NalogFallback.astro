@@ -1,0 +1,58 @@
+---
+// Obična (duga) verzija radnog naloga: radi bez JavaScripta i služi Netlifyju za prepoznavanje polja.
+import { STEPS, PRILOG_EXT } from '../../lib/nalog';
+
+const polja = STEPS.flatMap((s) => s.polja);
+---
+
+<form
+  name="radni-nalog"
+  method="POST"
+  action="/hvala/"
+  enctype="multipart/form-data"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  class="nalog-fallback"
+>
+  <input type="hidden" name="form-name" value="radni-nalog" />
+  <p class="skriveno"><label>Ne ispunjavajte ovo polje: <input name="bot-field" /></label></p>
+
+  {polja.map((p) =>
+    p.tip === 'izbor' ? (
+      <fieldset>
+        <legend>{p.label}</legend>
+        {p.opcije!.map((o) => (
+          <label class="opcija"><input type="radio" name={p.name} value={o.value} required={p.obavezno} /> {o.label}</label>
+        ))}
+      </fieldset>
+    ) : p.tip === 'checkbox' ? (
+      <label class="opcija"><input type="checkbox" name={p.name} value="da" required /> {p.label}</label>
+    ) : p.tip === 'textarea' ? (
+      <label class="polje">{p.label}<textarea name={p.name} rows="4"></textarea></label>
+    ) : (
+      <label class="polje">
+        {p.label}
+        <input type={p.tip === 'tekst' ? 'text' : p.tip} name={p.name} required={p.obavezno} autocomplete={p.autocomplete} />
+      </label>
+    ),
+  )}
+
+  <label class="polje">
+    Priložite troškovnik, nacrt ili fotografije (neobavezno, do 8 MB)
+    <input type="file" name="prilog" accept={PRILOG_EXT.map((x) => `.${x}`).join(',')} />
+  </label>
+  <button class="btn btn-primary" type="submit">Pošalji radni nalog</button>
+</form>
+
+<style>
+  .nalog-fallback { max-width: 44rem; }
+  .skriveno { display: none; }
+  fieldset { border: 0; padding: 0; margin: 0 0 1.5rem; }
+  legend { font-weight: 700; font-size: 1.15rem; margin-bottom: 0.5rem; }
+  .opcija { display: flex; gap: 0.6rem; align-items: center; min-height: 44px; }
+  .polje { display: block; font-weight: 600; margin-bottom: 1.25rem; }
+  .polje input, .polje textarea {
+    display: block; width: 100%; margin-top: 0.3rem; padding: 0.75rem; font: inherit; font-weight: 400;
+    border: 2px solid var(--border); border-radius: 2px; background: var(--background);
+  }
+</style>

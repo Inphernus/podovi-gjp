@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ReferencaKartica from '../components/astro/ReferencaKartica.astro';
+import { getReference } from '../lib/reference';
+import { OBJEKTI } from '../lib/objekti';
+import { site } from '../lib/site';
+
+const poTipu = await Promise.all(OBJEKTI.map(async (o) => ({ tip: o.value, reference: await getReference({ tipObjekta: o.value, limit: 3 }) })));
+const zadane = await getReference({ limit: 3 });
+const koraci = [
+  'Izlazak na teren i pregled prostora',
+  'Mjerenje vlage CM metodom i ravnine podloge',
+  'Ponuda s pripremom, završnim radovima i logistikom',
+  'Dogovor termina izvedbe',
+];
+---
+
+<BaseLayout title="Hvala" description="Radni nalog je poslan." canonicalPath="/hvala/" noindex>
+  <section class="wrap hvala">
+    <h1>Hvala, radni nalog je poslan</h1>
+    <p class="lead">Pregledat ćemo podatke, javiti se radi izlaska na teren i poslati vam ponudu u roku 48 sati od obilaska.</p>
+    <div class="grid">
+      <div>
+        <h2>Što slijedi</h2>
+        <ol data-hvala-proces>{koraci.map((k) => <li>{k}</li>)}</ol>
+      </div>
+      <div class="hitno">
+        <h2>Hitno?</h2>
+        <p>Nazovite nas izravno:</p>
+        <a class="tel" href={`tel:${site.telefon.replace(/\s/g, '')}`}>{site.telefon}</a>
+      </div>
+    </div>
+  </section>
+
+  {zadane.length > 0 && (
+    <section class="wrap ref" data-hvala-reference aria-labelledby="hvala-ref">
+      <h2 id="hvala-ref">Slični projekti</h2>
+      {poTipu.filter((g) => g.reference.length).map((g) => (
+        <div class="mreza" data-tip={g.tip} hidden>{g.reference.map((r) => <ReferencaKartica referenca={r} />)}</div>
+      ))}
+      <div class="mreza" data-tip="zadano">{zadane.map((r) => <ReferencaKartica referenca={r} />)}</div>
+    </section>
+  )}
+</BaseLayout>
+
+<script>
+  const tip = new URLSearchParams(location.search).get('objekt');
+  const odgovarajuci = tip ? document.querySelector<HTMLElement>(`[data-hvala-reference] [data-tip="${CSS.escape(tip)}"]`) : null;
+  if (odgovarajuci) {
+    odgovarajuci.hidden = false;
+    document.querySelector<HTMLElement>('[data-hvala-reference] [data-tip="zadano"]')?.setAttribute('hidden', '');
+  }
+</script>
+
+<style>
+  .hvala { padding-block: clamp(3rem, 6vw, 5rem) 3rem; }
+  h1 { margin: 0 0 1rem; font-size: clamp(2.6rem, 6.5vw, 5.2rem); font-stretch: 62%; }
+  .lead { font-size: 1.3rem; max-width: 36em; margin: 0 0 3rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 2rem 3rem; }
+  h2 { font-size: 1.8rem; font-stretch: 75%; margin: 0 0 1rem; }
+  ol { margin: 0; padding-left: 1.4rem; }
+  li { padding-block: 0.4rem; }
+  .hitno { border-left: 2px solid var(--primary); padding-left: 1.5rem; }
+  .tel { font-size: 2rem; font-weight: 800; font-stretch: 75%; color: inherit; }
+  .ref { padding-bottom: 5rem; }
+  .mreza { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 2.5rem 1.5rem; }
+  .mreza[hidden] { display: none; }
+</style>
