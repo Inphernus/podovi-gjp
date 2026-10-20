@@ -32,3 +32,19 @@ test('sekundarni gumb i slanje forme nisu hover gumb', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('.hero a.btn-secondary')).not.toHaveClass(/hover-gumb/);
 });
+
+test('na hoveru su tekst i strelica centrirani u gumbu', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  const g = page.locator('.hero a.hover-gumb');
+  await g.hover();
+  await page.waitForTimeout(500);
+  const { lijevo, desno } = await g.evaluate((el) => {
+    const gb = el.getBoundingClientRect();
+    const sloj = el.querySelector('span[aria-hidden="true"].absolute')!;
+    const t = sloj.children[0].getBoundingClientRect();
+    const s = sloj.querySelector('svg path')!.getBoundingClientRect();
+    return { lijevo: t.left - gb.left, desno: gb.right - s.right };
+  });
+  expect(Math.abs(lijevo - desno)).toBeLessThan(1.5);
+});

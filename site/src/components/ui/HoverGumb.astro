@@ -3,6 +3,7 @@
 // Prenesen doslovno: iste Tailwind klase, oblik, točka koja se širi u ispunu i strelica (lucide ArrowRight).
 // Jedine razlike: <a> umjesto <button> (CTA vodi na stranicu), širina prema tekstu umjesto fiksnih w-32,
 // najmanja visina 44 px (dodir), točka na fiksnih 1.75rem umjesto 20 % (duži tekst bi je prekrio),
+// sadržaj na hoveru vizualno centriran (+2.5px umjesto -translate-x-1, jer strelica u ikoni ima 5px praznine desno),
 // i iste promjene na :focus-visible kao na hoveru (tipkovnica).
 // Boje: točka/ispuna crna i bijeli tekst kao u originalu; u tamnoj sekciji se obrću (--hg-*).
 interface Props {
@@ -29,7 +30,7 @@ const { href, tekst, mali = false, class: klasa = '' } = Astro.props;
   >
   <span
     aria-hidden="true"
-    class="absolute top-0 left-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-2 text-[var(--hg-tekst)] opacity-0 transition-all duration-300 group-hover:-translate-x-1 group-hover:opacity-100 group-focus-visible:-translate-x-1 group-focus-visible:opacity-100"
+    class="absolute top-0 left-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-2 text-[var(--hg-tekst)] opacity-0 transition-all duration-300 group-hover:translate-x-[2.5px] group-hover:opacity-100 group-focus-visible:translate-x-[2.5px] group-focus-visible:opacity-100"
   >
     <span>{tekst}</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
