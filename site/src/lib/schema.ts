@@ -91,3 +91,8 @@ export function websiteSchema(): object {
     publisher: { '@id': BUSINESS_ID },
   };
 }
+
+/** JSON-LD za <script>: „<” se escapea, pa sadržaj nikad ne može zatvoriti script tag. */
+export function jsonLdString(data: object): string {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}

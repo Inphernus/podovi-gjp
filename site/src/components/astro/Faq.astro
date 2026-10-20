@@ -1,5 +1,5 @@
 ---
-import { faqSchema } from '../../lib/schema';
+import { faqSchema, jsonLdString } from '../../lib/schema';
 
 interface Props {
   pitanja: { pitanje: string; odgovor: string }[];
@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { pitanja, naslov = 'Česta pitanja' } = Astro.props;
-const ld = JSON.stringify(faqSchema(pitanja));
+const ld = jsonLdString(faqSchema(pitanja));
 ---
 
 <section class="faq" aria-labelledby="faq-naslov" data-faq>

@@ -20,9 +20,9 @@ const polja = STEPS.flatMap((s) => s.polja);
   {polja.map((p) =>
     p.tip === 'izbor' ? (
       <fieldset>
-        <legend>{p.label}</legend>
+        <legend>{p.label}{p.name === 'raspored' && ' (samo za LVT i laminat)'}</legend>
         {p.opcije!.map((o) => (
-          <label class="opcija"><input type="radio" name={p.name} value={o.value} required={p.obavezno} /> {o.label}</label>
+          <label class="opcija"><input type="radio" name={p.name} value={o.value} required={p.obavezno && p.name !== 'raspored'} /> {o.label}</label>
         ))}
       </fieldset>
     ) : p.tip === 'checkbox' ? (

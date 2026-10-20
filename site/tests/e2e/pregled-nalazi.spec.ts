@@ -22,7 +22,7 @@ test('strelica mijenja odabir bez prelaska na sljedeći korak', async ({ page })
 test('ako se JS forme ne učita, prikazuje se obična forma', async ({ page }) => {
   await page.route(/\/_astro\/.*\.js$/, (r) => r.abort());
   await page.goto('/zatrazi-ponudu/');
-  await expect(page.locator('form[name="radni-nalog"]')).toBeVisible({ timeout: 8000 });
+  await expect(page.locator('form[name="radni-nalog"]')).toBeVisible({ timeout: 12_000 });
 });
 
 test('kad JS radi, postoji samo jedna forma', async ({ page }) => {
@@ -45,4 +45,17 @@ test('skriveno polje za datoteku nije zasebna stanica tabulatora', async ({ page
   await page.evaluate(() => sessionStorage.setItem('gjp-radni-nalog', JSON.stringify({ a: { objekt: 'hotel', obloga: 'epoksid', povrsina: '50-150', podloga: 'ne-znam', niveliranje: 'da', 'starost-estriha': 'ne-znam', 'podno-grijanje': 'ne', lokacija: 'Split', kat: 'prizemlje', dizalo: 'da', pocetak: 'odmah' }, korak: 'kontakt' })));
   await page.reload();
   await expect(page.locator('#nalog-prilog')).toHaveAttribute('tabindex', '-1');
+});
+
+test('sporo učitavanje: kad se pojavi obična forma, ostaje i nakon što JS stigne', async ({ page }) => {
+  test.setTimeout(40_000);
+  await page.route(/\/_astro\/.*\.js$/, async (r) => {
+    await new Promise((res) => setTimeout(res, 10_000));
+    await r.continue();
+  });
+  await page.goto('/zatrazi-ponudu/');
+  await expect(page.locator('form[name="radni-nalog"]')).toBeVisible({ timeout: 12_000 });
+  await page.waitForFunction(() => (window as unknown as { __gjpNalogMount?: boolean }).__gjpNalogMount === true, null, { timeout: 25_000 }); // island se pokrenuo
+  await page.waitForTimeout(500);
+  await expect(page.locator('form[name="radni-nalog"]')).toBeVisible();
 });

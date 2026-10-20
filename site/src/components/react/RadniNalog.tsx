@@ -30,11 +30,19 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
   // Vraćanje spremljenog stanja i prefill iz URL-a (samo u pregledniku).
   // Prefill iz URL-a ima prednost: tada se kreće od prvog neodgovorenog koraka.
   React.useEffect(() => {
+    const w = window as unknown as { __gjpNalog?: boolean; __gjpNalogMount?: boolean; __gjpNalogTimeout?: boolean };
+    w.__gjpNalogMount = true;
+    // Island preuzima stranicu (miče rezervnu formu da se natpisi ne dupliraju) — osim ako se zbog sporog
+    // učitavanja rezervna forma već prikazala: tada korisnik nastavlja s njom, a island ostaje skriven.
+    const preuzmiStranicu = () => {
+      if (w.__gjpNalogTimeout) return;
+      document.querySelector('.nalog-fallback')?.remove();
+      w.__gjpNalog = true;
+    };
     // Ako je korisnik već nešto odabrao prije ovog efekta, ne prepisuj mu odabir spremljenim stanjem
     if (dirao.current) {
       setUcitano(true);
-      document.querySelector('.nalog-fallback')?.remove();
-      (window as unknown as { __gjpNalog?: boolean }).__gjpNalog = true;
+      preuzmiStranicu();
       return;
     }
     const prefill = prefillFromQuery(new URLSearchParams(location.search));
@@ -44,9 +52,7 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
     setA(pocetni);
     setKorak(nastavi ? spremljeniKorak : pocetniKorak(pocetni));
     setUcitano(true);
-    // Island radi: makni rezervnu formu (inače bi se natpisi duplicirali) i javi stranici da je spreman
-    document.querySelector('.nalog-fallback')?.remove();
-    (window as unknown as { __gjpNalog?: boolean }).__gjpNalog = true;
+    preuzmiStranicu();
   }, []);
 
   // Sinkrono nakon izmjene, da ni brzo osvježavanje ne izgubi zadnji odgovor
@@ -99,6 +105,8 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
 
   const posalji = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Enter u polju na koracima prije kontakta znači „Dalje”, ne slanje
+    if (korak !== 'kontakt') return dalje();
     const g = validateStep('kontakt', a, prilog);
     if (Object.keys(g).length) return prikaziGreske(g);
     for (const id of vidljivi) {
@@ -117,7 +125,8 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
 
   const odaberiDatoteku = (f: File | null | undefined) => {
     setPrilog(f ?? null);
-    setGreske((g) => ({ ...g, prilog: undefined }));
+    // Vrsta i veličina priloga provjeravaju se odmah pri odabiru, ne tek pri slanju
+    setGreske((g) => ({ ...g, prilog: f ? validateStep('kontakt', a, f).prilog : undefined }));
   };
 
   const polje = (p: Polje) => {
@@ -228,7 +237,7 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
       </form>
 
       <aside aria-label="Radni nalog" className="nalog-aside lg:col-span-5">
-        <div className="lg:sticky lg:top-6 border-2 border-foreground bg-background p-5">
+        <div className="lg:sticky lg:top-6 rounded-xl border border-border bg-black/5 p-5">
           <h2 className="mb-3 text-2xl">Radni nalog</h2>
           {sazetak.length === 0 ? (
             <p className="text-muted-foreground">Odgovori se ovdje upisuju kako ih unosite.</p>

@@ -19,7 +19,7 @@ test('skrolanjem se slojevi aktiviraju jedan po jedan', async ({ page }) => {
   for (const [i, id] of IDS.entries()) {
     await skrolajDoSloja(page, i);
     await expect(page.locator(`#sloj-${id}`)).toBeVisible();
-    await expect(page.locator(`.layer-btn[data-id="${id}"]`)).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator(`.layer-btn[data-id="${id}"]`)).toHaveAttribute('aria-selected', 'true');
   }
 });
 
@@ -37,5 +37,5 @@ test('klik na sloj skrola do njegovog mjesta i ostaje aktivan', async ({ page })
   await page.locator('.layer-btn[data-id="estrih"]').click();
   await page.waitForTimeout(900);
   await expect(page.locator('#sloj-estrih')).toBeVisible();
-  await expect(page.locator('.layer-btn[aria-pressed="true"]')).toHaveAttribute('data-id', 'estrih');
+  await expect(page.locator('.layer-btn[aria-selected="true"]')).toHaveAttribute('data-id', 'estrih');
 });

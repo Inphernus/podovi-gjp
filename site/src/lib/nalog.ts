@@ -277,9 +277,13 @@ export function loadKorak(storage: Citaj): StepId | null {
   return STEPS.some((s) => s.id === k) ? (k as StepId) : null;
 }
 
+// Kontakt podaci se nikad ne spremaju u preglednik (dijeljena računala u uredima)
+const NE_SPREMAJ = new Set<string>(STEPS.find((s) => s.id === 'kontakt')!.polja.map((p) => p.name));
+
 export function saveAnswers(storage: Pisi, a: Answers, trenutni?: StepId): void {
   try {
-    storage?.setItem(STORAGE_KEY, JSON.stringify({ a, korak: trenutni }));
+    const bezKontakta = Object.fromEntries(Object.entries(a).filter(([k]) => !NE_SPREMAJ.has(k)));
+    storage?.setItem(STORAGE_KEY, JSON.stringify({ a: bezKontakta, korak: trenutni }));
   } catch {
     // privatni način ili pun storage: forma radi i bez spremanja
   }

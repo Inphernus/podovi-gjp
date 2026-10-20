@@ -15,18 +15,18 @@ test('objekti vode u formu s unaprijed odabranim tipom', async ({ page }) => {
 
 test('klik na sloj prikazuje njegov opis', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: /Nivelir masa/ }).click();
+  await page.getByRole('tab', { name: /Nivelir masa/ }).click();
   const clanak = page.locator('#sloj-nivelir');
   await expect(clanak).toBeVisible();
   await expect(clanak.getByRole('heading')).toHaveText('Samorazlijevajuća masa za izravnavanje');
   await expect(clanak.getByRole('link')).toHaveAttribute('href', '/usluge/priprema-podloge/');
   await expect(page.locator('#sloj-lvt')).toBeHidden();
-  await expect(page.locator('.layer-btn[aria-pressed="true"]')).toHaveCount(1);
+  await expect(page.locator('.layer-btn[aria-selected="true"]')).toHaveCount(1);
 });
 
 test('sloj se aktivira tipkovnicom', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: /Estrih/ }).focus();
+  await page.getByRole('tab', { name: /Estrih/ }).focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('#sloj-estrih')).toBeVisible();
 });

@@ -18,10 +18,14 @@ const putanja = [
   canonicalPath="/zatrazi-ponudu/"
   jsonLd={[breadcrumbSchema(putanja)]}
 >
-  <!-- S JS-om se prikazuje interaktivni nalog; ako se island ne pokrene u 5 s (blokiran JS, greška), vraća se obična forma -->
+  <!-- S JS-om se prikazuje interaktivni nalog; ako se island ne pokrene u 8 s (blokiran JS, greška), vraća se obična forma -->
   <script is:inline>
     document.documentElement.classList.add('js-nalog');
-    setTimeout(function () { if (!window.__gjpNalog) document.documentElement.classList.remove('js-nalog'); }, 5000);
+    setTimeout(function () {
+      if (window.__gjpNalog) return;
+      window.__gjpNalogTimeout = true; // island se nije pokrenuo na vrijeme: obična forma ostaje do kraja posjeta
+      document.documentElement.classList.remove('js-nalog');
+    }, 8000);
   </script>
   <Breadcrumbs items={putanja} />
   <header class="wrap head">

@@ -28,6 +28,7 @@ const datum = d.datum.toLocaleDateString('hr-HR', { day: 'numeric', month: 'long
   title={d.naslov}
   description={d.metaOpis}
   canonicalPath={`/savjeti/${savjet.id}/`}
+  ogType="article"
   jsonLd={[articleSchema({ naslov: d.naslov, metaOpis: d.metaOpis, datum: d.datum, slug: savjet.id }), breadcrumbSchema(putanja)]}
 >
   <Breadcrumbs items={putanja} />

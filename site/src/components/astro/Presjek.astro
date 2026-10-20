@@ -16,10 +16,10 @@ const svg = renderPresjekSvg(SLOJEVI);
   <div class="stage" data-raslojavanje-kraj="0.2">
     <div class="wrap stage-inner">
       <div class="left">
-        <ol class="layer-list">
+        <ol class="layer-list" role="tablist" aria-label="Slojevi poda" aria-orientation="vertical">
           {SLOJEVI.map((s) => (
-            <li>
-              <button class="layer-btn" type="button" aria-pressed="false" aria-controls={`sloj-${s.id}`} data-id={s.id}>
+            <li role="presentation">
+              <button class="layer-btn" type="button" role="tab" id={`tab-${s.id}`} aria-selected="false" aria-controls={`sloj-${s.id}`} data-id={s.id}>
                 <span class="depth">{s.dubina}</span>
                 <span class="name">{s.naziv}</span>
               </button>
@@ -28,7 +28,7 @@ const svg = renderPresjekSvg(SLOJEVI);
         </ol>
         <div class="detail">
           {SLOJEVI.map((s) => (
-            <article id={`sloj-${s.id}`}>
+            <article id={`sloj-${s.id}`} role="tabpanel" aria-labelledby={`tab-${s.id}`}>
               <span class="big" aria-hidden="true">{s.velikiBroj}</span>
               <h3>{s.naslov}</h3>
               <p>{s.tekst}</p>
@@ -50,7 +50,10 @@ const svg = renderPresjekSvg(SLOJEVI);
     const slojevi = root.querySelectorAll<SVGGElement>('.stack .layer');
     const stack = root.querySelector('.stack');
     const aktiviraj = (id: string) => {
-      gumbi.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
+      gumbi.forEach((b) => {
+        b.setAttribute('aria-selected', String(b.dataset.id === id));
+        b.tabIndex = b.dataset.id === id ? 0 : -1;
+      });
       clanci.forEach((a) => (a.hidden = a.id !== `sloj-${id}`));
       slojevi.forEach((g) => g.classList.toggle('is-active', g.dataset.id === id));
     };
@@ -98,6 +101,17 @@ const svg = renderPresjekSvg(SLOJEVI);
       const b = (e.target as Element).closest<HTMLButtonElement>('.layer-btn');
       if (b?.dataset.id) prema(b.dataset.id);
     });
+    // Tab uzorak: strelice gore/dolje mijenjaju sloj, Home/End prvi/zadnji
+    root.querySelector('.layer-list')?.addEventListener('keydown', (e) => {
+      const ev = e as KeyboardEvent;
+      const i = ids.indexOf(trenutni);
+      const novi = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: ids.length - 1 }[ev.key];
+      if (novi === undefined) return;
+      ev.preventDefault();
+      const id = ids[(novi + ids.length) % ids.length];
+      prema(id);
+      root.querySelector<HTMLButtonElement>(`#tab-${id}`)?.focus();
+    });
     stack?.addEventListener('click', (e) => {
       const g = (e.target as Element).closest<SVGGElement>('.layer');
       if (g?.dataset.id) prema(g.dataset.id);
@@ -135,11 +149,11 @@ const svg = renderPresjekSvg(SLOJEVI);
     content: ''; position: absolute; inset: 0 auto 0 0; width: 2px; background: var(--primary);
     transform: scaleY(0); transition: transform 0.25s ease;
   }
-  .layer-btn[aria-pressed='true']::before { transform: scaleY(1); }
+  .layer-btn[aria-selected='true']::before { transform: scaleY(1); }
   .depth { font-size: 0.9rem; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
   .name { font-weight: 700; font-size: 1.1rem; }
-  .layer-btn[aria-pressed='true'] .name { color: var(--primary); }
-  .layer-btn[aria-pressed='true'] .depth { color: var(--estrih); }
+  .layer-btn[aria-selected='true'] .name { color: var(--primary); }
+  .layer-btn[aria-selected='true'] .depth { color: var(--estrih); }
   .layer-btn:hover .name { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--primary); }
 
   .detail { margin-top: 1.5rem; }
