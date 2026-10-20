@@ -30,6 +30,11 @@ export type HoverExpandGalleryProps = {
   duration?: number;
   onChange?: (index: number, item: HoverExpandItem) => void;
   className?: string;
+  /**
+   * Vodoravni redovi i na desktopu: komponentin vlastiti „accordion” način (koji original koristi ispod 1024 px)
+   * — natpis u redu, slika se otvara ispod preko cijele širine. Slika zaobljena kao na desktopu originala.
+   */
+  vodoravno?: boolean;
 };
 
 export default function HoverExpandGallery({
@@ -42,6 +47,7 @@ export default function HoverExpandGallery({
   duration = 620,
   onChange,
   className = '',
+  vodoravno = false,
 }: HoverExpandGalleryProps) {
   const [active, setActive] = React.useState(defaultIndex);
 
@@ -57,6 +63,68 @@ export default function HoverExpandGallery({
     '--hx-max': `${maxOpenWidth}px`,
     '--hx-t': `${duration}ms`,
   } as React.CSSProperties;
+
+  if (vodoravno) {
+    return (
+      <section data-usluge-galerija data-21st style={rootVars} className={`relative w-full bg-background text-foreground ${className}`}>
+        <ul className="flex w-full flex-col border-t border-border">
+          {items.map((item, index) => {
+            const isActive = index === active;
+            const panelVars = {
+              '--hx-img-h': isActive ? `${mobileImageHeight}px` : '0px',
+              '--hx-img-o': isActive ? 1 : 0,
+            } as React.CSSProperties;
+            return (
+              <li key={`${item.title}-${index}`} data-panel style={panelVars} className="relative border-b border-border">
+                <button
+                  type="button"
+                  aria-expanded={isActive}
+                  aria-label={item.title}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType === 'mouse') open(index);
+                  }}
+                  onFocus={() => open(index)}
+                  onClick={() => open(index)}
+                  className="group relative block w-full cursor-pointer border-0 bg-transparent p-0 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-foreground/40"
+                >
+                  <span
+                    className={`flex h-16 w-full items-center justify-between gap-3 overflow-hidden px-5 text-[14px] tracking-tight transition-colors duration-[var(--hx-t)] ease-out motion-reduce:transition-none ${
+                      isActive ? 'text-foreground' : 'text-foreground/40'
+                    }`}
+                  >
+                    <span className="truncate">{item.title}</span>
+                    <span
+                      style={{ opacity: isActive && item.meta ? 1 : 0 }}
+                      className="shrink-0 text-[13px] font-medium transition-opacity duration-[var(--hx-t)] ease-out motion-reduce:transition-none"
+                    >
+                      {item.meta}
+                    </span>
+                  </span>
+                </button>
+                <a
+                  href={item.href}
+                  tabIndex={isActive ? 0 : -1}
+                  aria-hidden={!isActive}
+                  style={{ opacity: 'var(--hx-img-o)' }}
+                  className="block h-[var(--hx-img-h)] w-full overflow-hidden px-3 transition-[height,opacity] duration-[var(--hx-t)] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+                >
+                  <span className="relative block h-[calc(100%-0.75rem)] w-full overflow-hidden rounded-[10px]" style={{ background: item.accent }}>
+                    {item.src ? (
+                      <img src={item.src} alt={item.alt ?? item.title} draggable={false} style={{ maxWidth: 'none' }} className="block h-full w-full object-cover" />
+                    ) : null}
+                  </span>
+                  <span className="sr-only">
+                    {item.title}
+                    {item.opis ? `: ${item.opis}` : ''}
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    );
+  }
 
   return (
     <section
