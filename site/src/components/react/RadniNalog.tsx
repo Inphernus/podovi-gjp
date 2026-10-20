@@ -25,10 +25,18 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
   const fileRef = React.useRef<HTMLInputElement>(null);
   const [ucitano, setUcitano] = React.useState(false);
   const fokusiraj = React.useRef(false);
+  const dirao = React.useRef(false);
 
   // Vraćanje spremljenog stanja i prefill iz URL-a (samo u pregledniku).
   // Prefill iz URL-a ima prednost: tada se kreće od prvog neodgovorenog koraka.
   React.useEffect(() => {
+    // Ako je korisnik već nešto odabrao prije ovog efekta, ne prepisuj mu odabir spremljenim stanjem
+    if (dirao.current) {
+      setUcitano(true);
+      document.querySelector('.nalog-fallback')?.remove();
+      (window as unknown as { __gjpNalog?: boolean }).__gjpNalog = true;
+      return;
+    }
     const prefill = prefillFromQuery(new URLSearchParams(location.search));
     const pocetni = { ...loadAnswers(storage()), ...prefill };
     const spremljeniKorak = loadKorak(storage());
@@ -65,6 +73,7 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
 
   // potvrdi = false kad se odabir pomiče strelicama: tada se ne prelazi na sljedeći korak
   const postavi = (name: FieldName, v: string, potvrdi = true) => {
+    dirao.current = true;
     const nove = { ...a, [name]: v };
     setA(nove);
     setGreske((g) => ({ ...g, [name]: undefined }));

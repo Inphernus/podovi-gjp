@@ -1,7 +1,10 @@
 ---
-// Prilagođeno iz 21st.dev „Interactive Hover Button” (@dillionverma, Magic UI), izvornik u podovi-gjp/komponente-21st/.
-// Izmjene: link umjesto buttona (CTA vodi na stranicu), čisti CSS bez JS-a, GJP tokeni i kvadratni rub,
-// bez strelice; točka se širi u ispunu, a tekst izlazi desno i vraća se slijeva (samo transform/opacity).
+// 21st.dev „Interactive Hover Button” (@dillionverma, Magic UI) — izvornik u podovi-gjp/komponente-21st/.
+// Prenesen doslovno: iste Tailwind klase, oblik, točka koja se širi u ispunu i strelica (lucide ArrowRight).
+// Jedine razlike: <a> umjesto <button> (CTA vodi na stranicu), širina prema tekstu umjesto fiksnih w-32,
+// najmanja visina 44 px (dodir), točka na fiksnih 1.75rem umjesto 20 % (duži tekst bi je prekrio),
+// i iste promjene na :focus-visible kao na hoveru (tipkovnica).
+// Boje: točka/ispuna crna i bijeli tekst kao u originalu; u tamnoj sekciji se obrću (--hg-*).
 interface Props {
   href: string;
   tekst: string;
@@ -12,72 +15,39 @@ interface Props {
 const { href, tekst, mali = false, class: klasa = '' } = Astro.props;
 ---
 
-<a class:list={['hover-gumb', { mali }, klasa]} href={href}>
-  <span class="tocka" data-tocka aria-hidden="true"></span>
-  <span class="tekst">{tekst}</span>
-  <span class="tekst-hover" aria-hidden="true">{tekst}</span>
+<a
+  href={href}
+  class:list={[
+    'hover-gumb group relative inline-flex min-h-11 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-border bg-background p-2 pl-10 pr-7 text-center font-semibold text-foreground no-underline',
+    mali ? 'text-[0.95rem]' : 'text-base',
+    klasa,
+  ]}
+>
+  <span
+    class="tekst inline-block translate-x-1 transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0 group-focus-visible:translate-x-12 group-focus-visible:opacity-0"
+    >{tekst}</span
+  >
+  <span
+    aria-hidden="true"
+    class="absolute top-0 left-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-2 text-[var(--hg-tekst)] opacity-0 transition-all duration-300 group-hover:-translate-x-1 group-hover:opacity-100 group-focus-visible:-translate-x-1 group-focus-visible:opacity-100"
+  >
+    <span>{tekst}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+  </span>
+  <span
+    data-tocka
+    aria-hidden="true"
+    class="absolute top-[40%] left-[1.75rem] h-2 w-2 scale-[1] rounded-lg bg-[var(--hg-tocka)] transition-all duration-300 group-hover:top-[0%] group-hover:left-[0%] group-hover:h-full group-hover:w-full group-hover:scale-[1.8] group-focus-visible:top-[0%] group-focus-visible:left-[0%] group-focus-visible:h-full group-focus-visible:w-full group-focus-visible:scale-[1.8]"
+  ></span>
 </a>
 
 <style>
   .hover-gumb {
-    --hg-ispuna: var(--crna);
-    --hg-tekst-ispuna: var(--gips);
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 52px;
-    padding: 0 1.6rem 0 2.4rem;
-    border-radius: 2px;
-    background: var(--primary);
-    color: var(--primary-foreground);
-    font: 700 1rem/1 var(--font-sans);
-    text-decoration: none;
-    white-space: nowrap;
+    --hg-tocka: var(--crna);
+    --hg-tekst: var(--gips);
   }
   :global(.dark-section) .hover-gumb {
-    --hg-ispuna: var(--gips);
-    --hg-tekst-ispuna: var(--crna);
+    --hg-tocka: var(--gips);
+    --hg-tekst: var(--crna);
   }
-  .mali { min-height: 44px; padding: 0 1.1rem 0 2rem; font-size: 0.95rem; }
-
-  .tocka {
-    position: absolute;
-    left: 1.1rem;
-    top: 50%;
-    z-index: -1;
-    width: 8px;
-    height: 8px;
-    margin-top: -4px;
-    border-radius: 50%;
-    background: var(--hg-ispuna);
-    transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-  .mali .tocka { left: 0.9rem; }
-
-  .tekst,
-  .tekst-hover {
-    display: inline-block;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-  .tekst-hover {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: inherit; /* isti razmak kao gumb, da tekst ne skoči */
-    color: var(--hg-tekst-ispuna);
-    opacity: 0;
-    transform: translateX(-2.5rem);
-  }
-
-  .hover-gumb:hover .tocka,
-  .hover-gumb:focus-visible .tocka { transform: scale(70); }
-  .hover-gumb:hover .tekst,
-  .hover-gumb:focus-visible .tekst { opacity: 0; transform: translateX(2.5rem); }
-  .hover-gumb:hover .tekst-hover,
-  .hover-gumb:focus-visible .tekst-hover { opacity: 1; transform: none; }
 </style>

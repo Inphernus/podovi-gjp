@@ -15,15 +15,16 @@ for (const r of ['/', '/kontakt/', '/usluge/pvc-podovi/']) {
   });
 }
 
-test('hover gumb se na hoveru puni (točka se širi) bez promjene širine', async ({ page }) => {
+test('hover gumb se na hoveru puni (točka se širi do pune širine) bez promjene širine gumba', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   const g = page.locator('.hero a.hover-gumb');
   const sirina = (await g.boundingBox())!.width;
   await g.hover();
   await page.waitForTimeout(500);
-  const t = await g.locator('[data-tocka]').evaluate((el) => getComputedStyle(el).transform);
-  expect(t).not.toBe('none');
+  // kao u originalu: točka naraste do pune širine gumba
+  const tocka = (await g.locator('[data-tocka]').boundingBox())!;
+  expect(tocka.width).toBeGreaterThanOrEqual(sirina * 0.95);
   expect((await g.boundingBox())!.width).toBe(sirina);
 });
 

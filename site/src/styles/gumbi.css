@@ -10,7 +10,7 @@
   font-stretch: 100%;
   text-decoration: none;
   border: 2px solid transparent;
-  border-radius: 2px;
+  border-radius: 9999px; /* isti oblik kao 21st.dev hover gumb */
   cursor: pointer;
 }
 

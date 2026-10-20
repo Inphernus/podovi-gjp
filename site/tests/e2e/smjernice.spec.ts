@@ -21,7 +21,8 @@ for (const r of ['/', '/zatrazi-ponudu/']) {
     await page.goto(r);
     await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
     const losi = await page.evaluate(() =>
-      [...document.querySelectorAll('*')].flatMap((el) => {
+      // .hover-gumb je 21st.dev komponenta prenesena doslovno (transition-all) na izričit zahtjev klijenta
+      [...document.querySelectorAll('*')].filter((el) => !el.closest('.hover-gumb')).flatMap((el) => {
         const t = getComputedStyle(el).transitionProperty;
         const d = getComputedStyle(el).transitionDuration;
         if (d.split(',').every((x) => parseFloat(x) === 0)) return [];
