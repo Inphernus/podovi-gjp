@@ -16,9 +16,13 @@ const presretni = async (page: Page, status = 200) => {
 
 const doKontakta = async (page: Page) => {
   await odaberi(page, 'Vrsta objekta', 'Hotel, turistički ili ugostiteljski objekt');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Vrsta obloge', 'LVT vinil ploče i daske');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Raspored', 'Riblja kost');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Površina', '150 – 500 m²');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Trenutna podloga', 'Novi estrih, nikad nije bilo obloge');
   await odaberi(page, 'Je li potrebno niveliranje ili sanacija podloge?', 'Da');
   await page.getByRole('button', { name: 'Dalje' }).click();
@@ -57,7 +61,9 @@ test('puni tok šalje radni nalog i vodi na zahvalnu stranicu', async ({ page })
 
 test('PVC u roli preskače raspored i ne broji ga u napretku', async ({ page }) => {
   await odaberi(page, 'Vrsta objekta', 'Zdravstvena ustanova');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Vrsta obloge', 'PVC / vinil u roli');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await expect(page.getByRole('heading', { name: 'Kolika je približna površina?' })).toBeVisible();
   await expect(page.getByText('Korak 3 od 7')).toBeVisible();
 });
@@ -73,8 +79,11 @@ test('query parametri unaprijed popunjavaju korake', async ({ page }) => {
 
 test('klik na stavku naloga vraća na taj korak s odgovorom', async ({ page }) => {
   await odaberi(page, 'Vrsta objekta', 'Hotel, turistički ili ugostiteljski objekt');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Vrsta obloge', 'Epoksidni pod');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Površina', '150 – 500 m²');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await page.getByRole('complementary', { name: 'Radni nalog' }).getByRole('button', { name: /Površina/ }).click();
   await expect(page.getByRole('heading', { name: 'Kolika je približna površina?' })).toBeVisible();
   await expect(page.getByRole('radio', { name: '150 – 500 m²' })).toHaveAttribute('aria-checked', 'true');
@@ -82,8 +91,11 @@ test('klik na stavku naloga vraća na taj korak s odgovorom', async ({ page }) =
 
 test('osvježavanje vraća korak i odgovore', async ({ page }) => {
   await odaberi(page, 'Vrsta objekta', 'Hotel, turistički ili ugostiteljski objekt');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Vrsta obloge', 'Epoksidni pod');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await odaberi(page, 'Površina', '150 – 500 m²');
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Kakva je trenutna podloga?' })).toBeVisible();
   await expect(page.getByRole('complementary', { name: 'Radni nalog' })).toContainText('Hotel, turistički ili ugostiteljski objekt');

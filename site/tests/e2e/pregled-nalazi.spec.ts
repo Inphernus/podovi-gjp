@@ -12,7 +12,10 @@ test('strelica mijenja odabir bez prelaska na sljedeći korak', async ({ page })
   await expect(page.getByRole('heading', { name: 'Za kakav prostor tražite pod?' })).toBeVisible();
   await expect(page.getByRole('radio').nth(1)).toHaveAttribute('aria-checked', 'true');
   await expect(page.getByRole('radio').nth(1)).toBeFocused();
+  // Enter samo potvrđuje odabir; dalje se ide gumbom Dalje
   await page.keyboard.press('Enter');
+  await expect(page.getByRole('heading', { name: 'Za kakav prostor tražite pod?' })).toBeVisible();
+  await page.getByRole('button', { name: 'Dalje' }).click();
   await expect(page.getByRole('heading', { name: 'Znate li već koju oblogu želite?' })).toBeVisible();
 });
 

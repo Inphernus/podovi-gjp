@@ -44,6 +44,7 @@ const putanja = [
   .nalog-app { display: none; }
   :global(.js-nalog) .nalog-app { display: block; }
   :global(.js-nalog) :global(.nalog-fallback) { display: none; }
-  :global(.nalog-korak) { animation: korak-ulaz 0.22s ease-out; }
-  @keyframes korak-ulaz { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  /* Svaki novi korak lagano izroni (fade-in + mali pomak odozdo) */
+  :global(.nalog-korak) { animation: korak-ulaz 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes korak-ulaz { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 </style>

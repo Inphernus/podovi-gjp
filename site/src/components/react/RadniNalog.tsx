@@ -71,13 +71,11 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
   const redni = vidljivi.indexOf(korak) + 1;
   const jednoIzbor = def.polja.length === 1 && def.polja[0].tip === 'izbor';
 
-  // potvrdi = false kad se odabir pomiče strelicama: tada se ne prelazi na sljedeći korak
-  const postavi = (name: FieldName, v: string, potvrdi = true) => {
+  // Odabir samo upisuje odgovor; na sljedeći korak se ide isključivo gumbom „Dalje” (zahtjev klijenta)
+  const postavi = (name: FieldName, v: string) => {
     dirao.current = true;
-    const nove = { ...a, [name]: v };
-    setA(nove);
+    setA((stari) => ({ ...stari, [name]: v }));
     setGreske((g) => ({ ...g, [name]: undefined }));
-    if (jednoIzbor && potvrdi) idiNa(nextStep(korak, nove));
   };
 
   // Greške se prikazuju uz polja, a fokus ide na prvo neispravno polje (redom kao u koraku)
@@ -128,7 +126,7 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
     if (p.tip === 'izbor') {
       return (
         <Choicebox key={p.name} id={id} label={p.label} opcije={p.opcije!} value={a[p.name]} greska={greska}
-          vidljivLabel={!jednoIzbor} onChange={(v, potvrdi) => postavi(p.name, v, potvrdi)} />
+          vidljivLabel={!jednoIzbor} onChange={(v) => postavi(p.name, v)} />
       );
     }
     if (p.tip === 'checkbox') {
@@ -223,9 +221,9 @@ export default function RadniNalog({ telefon }: { telefon: string }) {
             <button type="submit" className="btn btn-primary" disabled={status === 'saljem'} aria-busy={status === 'saljem'}>
               {status === 'saljem' ? 'Šaljem…' : 'Pošalji radni nalog'}
             </button>
-          ) : !jednoIzbor ? (
+          ) : (
             <button type="button" className="btn btn-primary" onClick={dalje}>Dalje</button>
-          ) : null}
+          )}
         </div>
       </form>
 
