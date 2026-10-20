@@ -1,4 +1,5 @@
 ---
+import HoverGumb from "../ui/HoverGumb.astro";
 import { getCollection } from 'astro:content';
 import logo from '../../../public/logo.svg?raw';
 import { site } from '../../lib/site';
@@ -12,7 +13,7 @@ const godina = new Date().getFullYear();
     <div class="brand">
       <a class="logo" href="/" aria-label="Podovi GJP, naslovna" set:html={logo} />
       <p>Podopolagački radovi za poslovne, javne i privatne prostore diljem Hrvatske.</p>
-      <a class="btn btn-primary" href="/zatrazi-ponudu/">Zatraži ponudu</a>
+      <HoverGumb href="/zatrazi-ponudu/" tekst="Zatraži ponudu" />
     </div>
     <nav aria-label="Usluge">
       <h2>Usluge</h2>

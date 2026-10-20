@@ -1,4 +1,5 @@
 ---
+import HoverGumb from "../ui/HoverGumb.astro";
 import { ribljaKostSvg } from '../../lib/presjek';
 
 const pod = ribljaKostSvg({ width: 400, height: 500, w: 22, L: 88 });
@@ -13,7 +14,7 @@ const pod = ribljaKostSvg({ width: 400, height: 500, w: 22, L: 88 });
         fokus na LVT podne obloge, tepihe, PVC podove u roli i epoksidne sustave.
       </p>
       <div class="actions">
-        <a class="btn btn-primary" href="/zatrazi-ponudu/">Zatraži ponudu</a>
+        <HoverGumb href="/zatrazi-ponudu/" tekst="Zatraži ponudu" />
         <a class="btn btn-secondary" href="/reference/">Pogledaj reference</a>
       </div>
     </div>

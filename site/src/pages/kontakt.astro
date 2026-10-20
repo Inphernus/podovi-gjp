@@ -1,4 +1,5 @@
 ---
+import HoverGumb from "../components/ui/HoverGumb.astro";
 import InfoStranica from '../components/astro/InfoStranica.astro';
 import { site } from '../lib/site';
 
@@ -18,5 +19,5 @@ const karta = `https://www.google.com/maps/search/?api=1&query=${encodeURICompon
     <div><dt>Adresa</dt><dd>{adresa}<br /><a href={karta} rel="noopener">Otvori kartu</a></dd></div>
     <div><dt>Područje rada</dt><dd>{site.podrucje}</dd></div>
   </dl>
-  <p><a class="btn btn-primary" href="/zatrazi-ponudu/">Zatraži ponudu</a></p>
+  <p><HoverGumb href="/zatrazi-ponudu/" tekst="Zatraži ponudu" /></p>
 </InfoStranica>

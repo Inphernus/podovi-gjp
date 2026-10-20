@@ -1,4 +1,5 @@
 ---
+import HoverGumb from "../ui/HoverGumb.astro";
 import logo from '../../../public/logo.svg?raw';
 
 const nav = [
@@ -19,7 +20,7 @@ const trenutna = Astro.url.pathname;
         <a href={n.href} aria-current={trenutna.startsWith(n.href) ? 'page' : undefined}>{n.tekst}</a>
       ))}
     </nav>
-    <a class="btn btn-primary btn-sm cta" href="/zatrazi-ponudu/">Zatraži ponudu</a>
+    <HoverGumb href="/zatrazi-ponudu/" tekst="Zatraži ponudu" mali class="cta" />
     <button class="menu-btn" type="button" aria-haspopup="dialog" data-menu-open>Izbornik</button>
   </div>
 
@@ -29,7 +30,7 @@ const trenutna = Astro.url.pathname;
     </div>
     <nav aria-label="Mobilna navigacija">
       {nav.map((n) => <a href={n.href}>{n.tekst}</a>)}
-      <a class="btn btn-primary" href="/zatrazi-ponudu/">Zatraži ponudu</a>
+      <HoverGumb href="/zatrazi-ponudu/" tekst="Zatraži ponudu" class="drawer-cta" />
     </nav>
   </dialog>
 </header>
@@ -69,10 +70,10 @@ const trenutna = Astro.url.pathname;
     font-size: 1.6rem; font-weight: 800; font-stretch: 70%; color: inherit; text-decoration: none;
     padding-block: 0.5rem; border-bottom: 1px solid var(--estrih);
   }
-  .drawer nav .btn { margin-top: 1.5rem; }
+  .drawer nav :global(.drawer-cta) { margin-top: 1.5rem; }
 
   @media (max-width: 900px) {
-    .nav, .cta { display: none; }
+    .nav, .bar :global(.cta) { display: none; }
     .menu-btn { display: inline-flex; align-items: center; }
   }
 </style>

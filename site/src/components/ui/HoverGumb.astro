@@ -1,0 +1,83 @@
+---
+// Prilagođeno iz 21st.dev „Interactive Hover Button” (@dillionverma, Magic UI), izvornik u podovi-gjp/komponente-21st/.
+// Izmjene: link umjesto buttona (CTA vodi na stranicu), čisti CSS bez JS-a, GJP tokeni i kvadratni rub,
+// bez strelice; točka se širi u ispunu, a tekst izlazi desno i vraća se slijeva (samo transform/opacity).
+interface Props {
+  href: string;
+  tekst: string;
+  mali?: boolean;
+  class?: string;
+}
+
+const { href, tekst, mali = false, class: klasa = '' } = Astro.props;
+---
+
+<a class:list={['hover-gumb', { mali }, klasa]} href={href}>
+  <span class="tocka" data-tocka aria-hidden="true"></span>
+  <span class="tekst">{tekst}</span>
+  <span class="tekst-hover" aria-hidden="true">{tekst}</span>
+</a>
+
+<style>
+  .hover-gumb {
+    --hg-ispuna: var(--crna);
+    --hg-tekst-ispuna: var(--gips);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 1.6rem 0 2.4rem;
+    border-radius: 2px;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font: 700 1rem/1 var(--font-sans);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  :global(.dark-section) .hover-gumb {
+    --hg-ispuna: var(--gips);
+    --hg-tekst-ispuna: var(--crna);
+  }
+  .mali { min-height: 44px; padding: 0 1.1rem 0 2rem; font-size: 0.95rem; }
+
+  .tocka {
+    position: absolute;
+    left: 1.1rem;
+    top: 50%;
+    z-index: -1;
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: var(--hg-ispuna);
+    transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .mali .tocka { left: 0.9rem; }
+
+  .tekst,
+  .tekst-hover {
+    display: inline-block;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .tekst-hover {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: inherit; /* isti razmak kao gumb, da tekst ne skoči */
+    color: var(--hg-tekst-ispuna);
+    opacity: 0;
+    transform: translateX(-2.5rem);
+  }
+
+  .hover-gumb:hover .tocka,
+  .hover-gumb:focus-visible .tocka { transform: scale(70); }
+  .hover-gumb:hover .tekst,
+  .hover-gumb:focus-visible .tekst { opacity: 0; transform: translateX(2.5rem); }
+  .hover-gumb:hover .tekst-hover,
+  .hover-gumb:focus-visible .tekst-hover { opacity: 1; transform: none; }
+</style>
