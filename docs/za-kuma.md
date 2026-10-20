@@ -42,9 +42,10 @@ Molim provjeri je li ovo točno, jer piše na webu:
 
 ## 5. Impressum (zakon traži za d.o.o.)
 
-- **Trgovački sud** i **MBS**
-- **Temeljni kapital** (uplaćen u cijelosti?)
-- **Član/članovi uprave** (ime i prezime)
+Iz Fininog registra sam već upisao: puni naziv, sjedište (10010 Zagreb), OIB, matični broj, temeljni kapital 2.654 € i tebe kao direktora. Fali još:
+
+- **MBS** (matični broj subjekta iz sudskog registra — piše na izvatku iz sudskog registra)
+- Potvrdi da je registarski sud **Trgovački sud u Zagrebu** i da je temeljni kapital **uplaćen u cijelosti**
 - Po želji: banka i IBAN
 
 ## 6. Politika privatnosti

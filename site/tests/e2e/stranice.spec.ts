@@ -41,3 +41,11 @@ test('nijedan gumb ne sadrži strelicu', async ({ page }) => {
     for (const t of tekstovi) expect(t, r).not.toContain('→');
   }
 });
+
+test('impressum sadrži registarske podatke društva', async ({ page }) => {
+  await page.goto('/impressum/');
+  const main = page.locator('main');
+  for (const t of ['70545360117', '05330122', 'Trgovački sud u Zagrebu', '2.654,00 EUR', 'Goran Šimac', '10010 Zagreb']) {
+    await expect(main).toContainText(t);
+  }
+});

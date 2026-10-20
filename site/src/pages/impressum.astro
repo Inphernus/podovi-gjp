@@ -1,14 +1,21 @@
 ---
 import InfoStranica from '../components/astro/InfoStranica.astro';
 import { site } from '../lib/site';
-// TODO-kum (neobavezno): MBS, sud registra, temeljni kapital, odgovorna osoba
+// Podaci po čl. 21. ZTD-a (tvrtka, sjedište, sud, MBS, OIB, temeljni kapital, uprava). Izvor: Fina InfoBiz, 20. 10. 2026.
+const r = site.registar;
 ---
 
 <InfoStranica naslov="Impressum" path="/impressum/" opis="Podaci o pružatelju usluga Podovi GJP.">
   <dl>
-    <div><dt>Naziv</dt><dd>{site.pravniNaziv}</dd></div>
-    <div><dt>Adresa</dt><dd>{site.adresa.ulica}, {site.adresa.postanskiBroj} {site.adresa.grad}</dd></div>
+    <div><dt>Tvrtka</dt><dd>{site.pravniNaziv}</dd></div>
+    <div><dt>Sjedište</dt><dd>{site.adresa.ulica}, {site.adresa.postanskiBroj} {site.adresa.grad}</dd></div>
     <div><dt>OIB</dt><dd>{site.oib}</dd></div>
+    <div><dt>Matični broj</dt><dd>{r.maticniBroj}</dd></div>
+    <div><dt>Registarski sud</dt><dd>{r.sud}</dd></div>
+    <div><dt>MBS</dt><dd>{r.mbs}</dd></div>
+    <div><dt>Temeljni kapital</dt><dd>{r.temeljniKapital}</dd></div>
+    <div><dt>Direktor</dt><dd>{r.direktor}</dd></div>
+    <div><dt>Djelatnost</dt><dd>{r.djelatnost}</dd></div>
     <div><dt>Telefon</dt><dd>{site.telefon}</dd></div>
     <div><dt>E-mail</dt><dd>{site.email}</dd></div>
   </dl>
