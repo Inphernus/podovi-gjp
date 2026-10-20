@@ -1,7 +1,28 @@
-// Prilagođeno iz 21st.dev „Choicebox” (@halaska-studio), izvornik u podovi-gjp/komponente-21st/.
-// Izmjene: kit-theme zamijenjen GJP tokenima (Tailwind), samo jedan odabir (radiogroup),
-// navigacija strelicama s „roving tabindex”, poruka greške povezana s grupom.
+// 21st.dev „Choicebox” (@halaska-studio) — izvornik u podovi-gjp/komponente-21st/.
+// Prenesen doslovno: isti stilovi (zaobljene kartice u stupcu, suptilna podloga, odabrano = tinta + tanki obrub akcenta,
+// kružić 16 px, naslov 14 px medium, opis 12 px), iste tranzicije.
+// `kit-theme` nije stigao s preuzimanjem, pa su njegove vrijednosti (Geist ljestvica) definirane ovdje; akcent = hrast.
+// Funkcionalne razlike: samo jedan odabir (radiogroup), navigacija strelicama (roving tabindex) i poruka greške.
 import * as React from 'react';
+
+const tokens = {
+  radius: { md: 12 },
+  weight: { medium: 500 },
+  type: {
+    sm: { fontSize: 14, lineHeight: '20px' },
+    xs: { fontSize: 12, lineHeight: '16px' },
+  },
+};
+const motion = { normal: '150ms', smooth: '200ms', easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)', easeOut: 'cubic-bezier(0, 0, 0.2, 1)' };
+const interactiveBase: React.CSSProperties = { cursor: 'pointer', font: 'inherit', outlineOffset: 2, width: '100%' };
+const pal = {
+  accent: 'var(--hrast)',
+  accentBg: 'rgb(168 116 63 / 0.10)',
+  bgSubtle: 'rgb(0 0 0 / 0.05)',
+  text: 'var(--crna)',
+  textSecondary: 'var(--muted-foreground)',
+  textMuted: 'var(--nivelir)',
+};
 
 export type ChoiceOpcija = { value: string; label: string; opis?: string };
 
@@ -34,42 +55,93 @@ export default function Choicebox({ id, label, opcije, value, onChange, greska, 
   };
 
   return (
-    <div className="mb-6">
+    <div data-21st style={{ marginBottom: 24 }}>
       <p id={`${id}-label`} className={vidljivLabel ? 'mb-3 text-lg font-bold' : 'sr-only'}>{label}</p>
       <div
         role="radiogroup"
         aria-labelledby={`${id}-label`}
         aria-describedby={greska ? `${id}-greska` : undefined}
         aria-invalid={greska ? true : undefined}
-        className="grid gap-2 sm:grid-cols-2"
+        style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
       >
-        {opcije.map((o, i) => {
-          const odabran = o.value === value;
+        {opcije.map((opt, i) => {
+          const selected = opt.value === value;
           return (
             <button
-              key={o.value}
+              key={opt.value}
               ref={(el) => { refs.current[i] = el; }}
               type="button"
               role="radio"
-              aria-checked={odabran}
+              aria-checked={selected}
               tabIndex={i === fokusIndex ? 0 : -1}
-              onClick={() => onChange(o.value, true)}
+              onClick={() => onChange(opt.value, true)}
               onKeyDown={(e) => onKeyDown(e, i)}
-              className={`flex min-h-14 w-full cursor-pointer items-start gap-3 rounded-[2px] border-2 px-4 py-3 text-left transition-colors duration-200 ${
-                odabran ? 'border-primary bg-primary/15' : 'border-border bg-background hover:border-foreground'
-              }`}
+              style={{
+                ...interactiveBase,
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 12,
+                padding: '12px 14px',
+                borderRadius: tokens.radius.md,
+                textAlign: 'left',
+                background: selected ? pal.accentBg : pal.bgSubtle,
+                border: `1px solid ${selected ? pal.accent : 'transparent'}`,
+                transition: `all ${motion.normal} ${motion.easeInOut}`,
+              }}
             >
               <span
-                aria-hidden="true"
-                className={`mt-1 flex size-4 flex-none items-center justify-center rounded-full border-2 ${
-                  odabran ? 'border-primary bg-primary' : 'border-muted-foreground'
-                }`}
+                style={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  flexShrink: 0,
+                  marginTop: 1,
+                  border: `1.5px solid ${selected ? pal.accent : pal.textMuted}`,
+                  background: selected ? pal.accent : 'transparent',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: `all ${motion.normal} ${motion.easeInOut}`,
+                }}
               >
-                {odabran ? <span className="size-1.5 rounded-full bg-background" /> : null}
+                {selected && (
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 3,
+                      background: '#fff',
+                      animation: `halaska-scale-in 0.2s ${motion.easeOut} both`,
+                    }}
+                  />
+                )}
               </span>
-              <span className="min-w-0">
-                <span className="block font-semibold">{o.label}</span>
-                {o.opis ? <span className="mt-0.5 block text-sm text-muted-foreground">{o.opis}</span> : null}
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span
+                  style={{
+                    ...tokens.type.sm,
+                    fontWeight: tokens.weight.medium,
+                    color: pal.text,
+                    display: 'block',
+                    transition: `color ${motion.smooth} ${motion.easeInOut}`,
+                  }}
+                >
+                  {opt.label}
+                </span>
+                {opt.opis && (
+                  <span
+                    style={{
+                      ...tokens.type.xs,
+                      color: pal.textSecondary,
+                      display: 'block',
+                      marginTop: 2,
+                      lineHeight: 1.5,
+                      transition: `color ${motion.smooth} ${motion.easeInOut}`,
+                    }}
+                  >
+                    {opt.opis}
+                  </span>
+                )}
               </span>
             </button>
           );
@@ -78,6 +150,7 @@ export default function Choicebox({ id, label, opcije, value, onChange, greska, 
       {greska ? (
         <p id={`${id}-greska`} className="mt-2 font-semibold text-[#9B2C1F]">{greska}</p>
       ) : null}
+      <style>{'@keyframes halaska-scale-in { from { transform: scale(0); } to { transform: scale(1); } }'}</style>
     </div>
   );
 }

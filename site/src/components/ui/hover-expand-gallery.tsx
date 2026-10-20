@@ -1,111 +1,142 @@
-// Prilagođeno iz 21st.dev „Hover Expand Gallery” (@kedhareswer), izvornik u podovi-gjp/komponente-21st/.
-// Izmjene: otvoreni panel nosi opis i pravi link na uslugu, aria-expanded umjesto aria-current,
-// GJP tokeni i Archivo, širina otvorenog panela popunjava redak, neaktivni sadržaj nije fokusabilan.
+// 21st.dev „Hover Expand Gallery” (@kedhareswer) — izvornik u podovi-gjp/komponente-21st/.
+// Prenesen doslovno (iste Tailwind klase, rail širina 64, otvoreni panel do 520 px, zaobljena slika, sitni okomiti natpisi).
+// Jedine razlike: otvorena slika je link na uslugu (href, nevidljivi opis za čitače ekrana i tražilice),
+// aria-expanded umjesto aria-current, visina zadana prop-om, i data-* oznake za testove.
 import * as React from 'react';
 
-export type GalerijaStavka = {
-  naslov: string;
-  opis: string;
-  href: string;
-  linkTekst: string;
+export type HoverExpandItem = {
+  /** The label. Rotated into the rail on desktop, a plain row on mobile. */
+  title: string;
+  /** Secondary label — a year, a role, a client. Only shown on the open panel. */
   meta?: string;
-  /** URL fotografije; bez nje se koristi `podloga` (CSS pozadina). */
-  slika?: string;
-  podloga: string;
+  /** Image URL. Panels without one fall back to `accent`. */
+  src?: string;
+  alt?: string;
+  /** Any CSS background. Used when `src` is absent, and behind it while it decodes. */
+  accent?: string;
+  /** Kamo vodi otvorena slika (stranica usluge). */
+  href: string;
+  /** Kratki opis usluge — samo za čitače ekrana i tražilice, vizualno skriven. */
+  opis?: string;
 };
 
-type Props = {
-  items: GalerijaStavka[];
+export type HoverExpandGalleryProps = {
+  items: HoverExpandItem[];
   height?: string;
   railWidth?: number;
+  maxOpenWidth?: number;
   mobileImageHeight?: number;
+  defaultIndex?: number;
   duration?: number;
+  onChange?: (index: number, item: HoverExpandItem) => void;
+  className?: string;
 };
 
 export default function HoverExpandGallery({
   items,
-  height = '560px',
-  railWidth = 76,
-  mobileImageHeight = 260,
+  height = '100svh',
+  railWidth = 64,
+  maxOpenWidth = 520,
+  mobileImageHeight = 420,
+  defaultIndex = 0,
   duration = 620,
-}: Props) {
-  const [active, setActive] = React.useState(0);
-  const uid = React.useId();
+  onChange,
+  className = '',
+}: HoverExpandGalleryProps) {
+  const [active, setActive] = React.useState(defaultIndex);
+
+  const open = (index: number) => {
+    if (index === active) return;
+    setActive(index);
+    onChange?.(index, items[index]);
+  };
 
   const rootVars = {
     '--hx-h': height,
     '--hx-rail': `${railWidth}px`,
-    '--hx-open': `calc(100% - ${(items.length - 1) * railWidth}px)`,
+    '--hx-max': `${maxOpenWidth}px`,
     '--hx-t': `${duration}ms`,
   } as React.CSSProperties;
 
   return (
-    <div data-usluge-galerija style={rootVars} className="w-full lg:h-[var(--hx-h)]">
-      <ul className="flex w-full flex-col lg:h-full lg:flex-row">
+    <section
+      data-usluge-galerija
+      data-21st
+      style={rootVars}
+      className={`relative w-full bg-background text-foreground lg:h-[var(--hx-h)] lg:overflow-hidden ${className}`}
+    >
+      <ul className="flex w-full flex-col lg:h-full lg:flex-row lg:justify-center">
         {items.map((item, index) => {
           const isActive = index === active;
-          const panelId = `${uid}-panel-${index}`;
           const panelVars = {
-            '--hx-basis': isActive ? 'var(--hx-open)' : 'var(--hx-rail)',
+            '--hx-basis': isActive ? 'var(--hx-max)' : 'var(--hx-rail)',
             '--hx-img-h': isActive ? `${mobileImageHeight}px` : '0px',
+            '--hx-img-o': isActive ? 1 : 0,
           } as React.CSSProperties;
 
           return (
             <li
-              key={item.href}
+              key={`${item.title}-${index}`}
               data-panel
               style={panelVars}
-              className="relative border-b border-border lg:h-full lg:min-w-0 lg:border-b-0 lg:border-l lg:last:border-r lg:[flex-basis:var(--hx-basis)] lg:[flex-grow:0] lg:[flex-shrink:0] lg:overflow-hidden lg:transition-[flex-basis] lg:duration-[var(--hx-t)] lg:ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+              className="relative border-b border-border last:border-b-0 lg:h-full lg:min-w-0 lg:border-b-0 lg:border-l lg:last:border-r lg:[flex-basis:var(--hx-basis)] lg:[flex-grow:0] lg:[flex-shrink:1] lg:transition-[flex-basis] lg:duration-[var(--hx-t)] lg:ease-[cubic-bezier(0.32,0.72,0,1)] lg:motion-reduce:transition-none"
             >
+              {/* Image. In flow below 1024px (its height animates); pinned next to the rail above it. Link na uslugu. */}
+              <a
+                href={item.href}
+                tabIndex={isActive ? 0 : -1}
+                aria-hidden={!isActive}
+                style={{ background: item.accent, opacity: 'var(--hx-img-o)' }}
+                className="block h-[var(--hx-img-h)] w-full overflow-hidden transition-[height,opacity] duration-[var(--hx-t)] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none lg:absolute lg:inset-y-2 lg:left-[var(--hx-rail)] lg:right-3 lg:h-auto lg:w-auto lg:rounded-[10px] lg:transition-opacity"
+              >
+                {item.src ? (
+                  <img
+                    src={item.src}
+                    alt={item.alt ?? item.title}
+                    draggable={false}
+                    style={{ maxWidth: 'none' }}
+                    className="block h-full w-full object-cover"
+                  />
+                ) : null}
+                <span className="sr-only">
+                  {item.title}
+                  {item.opis ? `: ${item.opis}` : ''}
+                </span>
+              </a>
+
               <button
                 type="button"
                 aria-expanded={isActive}
-                aria-controls={panelId}
-                onPointerEnter={(e) => {
-                  if (e.pointerType === 'mouse') setActive(index);
+                aria-label={item.title}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === 'mouse') open(index);
                 }}
-                onFocus={() => setActive(index)}
-                onClick={() => setActive(index)}
-                className={`flex min-h-16 w-full cursor-pointer items-center justify-between gap-3 border-0 bg-transparent px-5 text-left text-lg font-bold transition-colors duration-300 lg:absolute lg:inset-y-0 lg:left-0 lg:z-10 lg:h-full lg:w-[var(--hx-rail)] lg:flex-col-reverse lg:justify-between lg:px-0 lg:py-6 ${
-                  isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
-                }`}
+                onFocus={() => open(index)}
+                onClick={() => open(index)}
+                className="group relative block w-full cursor-pointer border-0 bg-transparent p-0 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-foreground/40 lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:w-[var(--hx-rail)] lg:overflow-hidden"
               >
-                <span className="lg:rotate-180 lg:whitespace-nowrap lg:[writing-mode:vertical-rl] [font-stretch:75%] text-xl lg:text-2xl">
-                  {item.naslov}
-                </span>
+                {/* Label. A row below 1024px; above it a rail down the left of the panel. */}
                 <span
-                  aria-hidden="true"
-                  className={`text-sm font-medium lg:rotate-180 lg:whitespace-nowrap lg:[writing-mode:vertical-rl] transition-opacity duration-300 ${
-                    isActive ? 'opacity-100' : 'opacity-0'
+                  className={`flex h-16 w-full items-center justify-between gap-3 overflow-hidden px-5 text-[14px] tracking-tight transition-colors duration-[var(--hx-t)] ease-out motion-reduce:transition-none lg:h-full lg:w-[var(--hx-rail)] lg:flex-col-reverse lg:justify-between lg:px-0 lg:py-5 ${
+                    isActive ? 'text-foreground' : 'text-foreground/40'
                   }`}
                 >
-                  {item.meta}
+                  <span className="truncate lg:overflow-hidden lg:rotate-180 lg:whitespace-nowrap lg:[writing-mode:vertical-rl]">
+                    {item.title}
+                  </span>
+                  <span
+                    style={{ opacity: isActive && item.meta ? 1 : 0 }}
+                    className="shrink-0 text-[13px] font-medium transition-opacity duration-[var(--hx-t)] ease-out motion-reduce:transition-none lg:rotate-180 lg:whitespace-nowrap lg:[writing-mode:vertical-rl]"
+                  >
+                    {item.meta}
+                  </span>
                 </span>
               </button>
 
-              <div
-                id={panelId}
-                aria-hidden={!isActive}
-                className={`overflow-hidden transition-[height,opacity] duration-[var(--hx-t)] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none h-[var(--hx-img-h)] lg:absolute lg:inset-y-0 lg:right-0 lg:left-[var(--hx-rail)] lg:h-auto ${
-                  isActive ? 'opacity-100' : 'opacity-0'
-                }`}
-              >
-                <div className="relative h-full w-full" style={{ background: item.podloga }}>
-                  {item.slika ? (
-                    <img src={item.slika} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
-                  ) : null}
-                  <div className="absolute bottom-0 left-0 max-w-md bg-background p-5 text-foreground lg:p-7">
-                    <p className="m-0 mb-3 text-base leading-relaxed">{item.opis}</p>
-                    <a href={item.href} tabIndex={isActive ? 0 : -1} className="link">
-                      {item.linkTekst}
-                    </a>
-                  </div>
-                </div>
-              </div>
             </li>
           );
         })}
       </ul>
-    </div>
+    </section>
   );
 }

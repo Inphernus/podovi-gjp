@@ -1,42 +1,38 @@
 ---
 import { getCollection } from 'astro:content';
-import HoverExpandGallery, { type GalerijaStavka } from '../ui/hover-expand-gallery';
+import HoverExpandGallery, { type HoverExpandItem } from '../ui/hover-expand-gallery';
 
 const sve = (await getCollection('usluge')).sort((a, b) => a.data.redoslijed - b.data.redoslijed);
 
 // Četiri glavna fokusa (specifikacija §7.1). Dok nema fotografija, podloga je materijalna tekstura u CSS-u.
-const galerija: GalerijaStavka[] = [
+const galerija: HoverExpandItem[] = [
   {
-    naslov: 'LVT vinil podovi',
+    title: 'LVT vinil podovi',
     meta: 'daska, riblja kost, chevron',
     opis: 'Izgled drva i kamena s otpornošću na vlagu. Lijepljeno ili loose-lay, u svim formatima.',
     href: '/usluge/lvt-vinil/',
-    linkTekst: 'LVT vinil podovi',
-    podloga: 'repeating-linear-gradient(45deg,#B88A57 0 28px,#A87B4A 28px 30px,#C29563 30px 58px,#9E7244 58px 60px)',
+    accent: 'repeating-linear-gradient(45deg,#B88A57 0 28px,#A87B4A 28px 30px,#C29563 30px 58px,#9E7244 58px 60px)',
   },
   {
-    naslov: 'Tepisi',
+    title: 'Tepisi',
     meta: 'ploče, rola, griperi',
     opis: 'Tepih ploče za urede, tepih u roli i na gripere za hotele i dvorane. Najbolja akustika od svih obloga.',
     href: '/usluge/tepih-ploce/',
-    linkTekst: 'Tepih ploče, rola i griperi',
-    podloga: 'repeating-linear-gradient(90deg,#4B4540 0 3px,#544D47 3px 6px), #4B4540',
+    accent: 'repeating-linear-gradient(90deg,#4B4540 0 3px,#544D47 3px 6px), #4B4540',
   },
   {
-    naslov: 'PVC podovi u roli',
+    title: 'PVC podovi u roli',
     meta: 'vareni spojevi, holkeri',
     opis: 'Higijenska ploha bez fuga za bolnice, vrtiće i škole, s varenim spojevima i holkerom uz zid.',
     href: '/usluge/pvc-podovi/',
-    linkTekst: 'PVC podovi u roli',
-    podloga: 'linear-gradient(90deg,transparent 0 49.6%,#7E8C8A 49.6% 50.4%,transparent 50.4%) 0 0/200px 100%, #9DAAA8',
+    accent: 'linear-gradient(90deg,transparent 0 49.6%,#7E8C8A 49.6% 50.4%,transparent 50.4%) 0 0/200px 100%, #9DAAA8',
   },
   {
-    naslov: 'Epoksidni podovi',
+    title: 'Epoksidni podovi',
     meta: 'samolijevni i premazni sustavi',
     opis: 'Bešavna, kemijski otporna ploha za proizvodnju, skladišta i garaže, s punom pripremom podloge.',
     href: '/usluge/epoksidni-podovi/',
-    linkTekst: 'Epoksidni podovi',
-    podloga: 'radial-gradient(ellipse at 30% 20%,#C9CCCB 0,#8F9493 60%,#6E7372 100%)',
+    accent: 'radial-gradient(ellipse at 30% 20%,#C9CCCB 0,#8F9493 60%,#6E7372 100%)',
   },
 ];
 
