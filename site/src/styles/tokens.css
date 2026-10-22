@@ -39,6 +39,8 @@
   --muted: var(--estrih);
   --muted-foreground: #57534D; /* sporedni tekst: kontrast ≥ 4,5:1 na gips; --nivelir samo za linije */
   --ring: var(--hrast);
+  --accent: rgb(0 0 0 / 0.05); /* shadcn „accent”: hover podloga ghost gumba (21st.dev header) */
+  --accent-foreground: var(--crna);
 }
 
 .dark-section {
@@ -61,6 +63,8 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-ring: var(--ring);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-crna: var(--crna);
   --color-wenge: var(--wenge);
   --color-hrast: var(--hrast);

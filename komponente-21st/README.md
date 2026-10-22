@@ -1,19 +1,19 @@
 # Komponente s 21st.dev
 
-Besplatni plan: 2 preuzimanja dnevno (reset u ponoć). Rok: četvrtak 22. 10. 2026.
+Besplatni plan: 2 preuzimanja dnevno (reset u ponoć). Pravilo: komponente se prenose identično originalu (iste klase, oblik, animacija, ikone); mijenjaju se samo boje (tokeni), tekst i ono što funkcionalno mora.
 
 | Datum | Komponenta | Datoteka | Za što | Napomena |
 |---|---|---|---|---|
-| 19. 10. | Hover Expand Gallery (@kedhareswer) | `hover-expand-gallery.tsx` | 4 glavne usluge na naslovnoj | čisti CSS + React state, bez npm ovisnosti; Tailwind klase |
-| 19. 10. | Choicebox (@halaska-studio) | `choicebox.tsx` | odabir odgovora u formi (radni nalog) | `kit-theme` nije stigao; zamijenjen GJP tokenima |
-| 20. 10. | Interactive Hover Button (@dillionverma, Magic UI) | `interactive-hover-button.tsx` | primarni CTA „Zatraži ponudu” | kao HoverGumb.astro: čisti CSS, link umjesto buttona, bez strelice |
+| 19. 10. | Hover Expand Gallery (@kedhareswer) | `hover-expand-gallery.tsx` | 4 glavne usluge na naslovnoj | doslovno; vodoravni (accordion) način i na desktopu, slika je link |
+| 19. 10. | Choicebox (@halaska-studio) | `choicebox.tsx` | odabir odgovora u formi | doslovno; `kit-theme` rekonstruiran Geist vrijednostima, akcent hrast |
+| 20. 10. | Interactive Hover Button (@dillionverma, Magic UI) | `interactive-hover-button.tsx` | primarni CTA „Zatraži ponudu” | doslovno kao HoverGumb.astro (pilula, točka, strelica); `<a>` umjesto buttona |
+| 22. 10. | Centered Nav Header (@olewandowski1) | `centered-nav-header.tsx` | header i mobilna ladica | Header.astro; nativni `<dialog>` umjesto Radix Sheeta, „Sign In” → telefon |
+| 22. 10. | Link Hover (@Shatlyk1011, MIT) | `link-hover.tsx` | — | nije efekt za nav linkove, nego sekcija s velikim popisom i fotkom koja uleti; čeka odluku gdje |
 
 ## Još za preuzeti
 
 | Dan | Komponenta | Link |
 |---|---|---|
-| 21. 10. | Interactive Hover Button, više stanja (slanje forme) | https://21st.dev/@Shatlyk1011/components/interactive-hover-button |
-| 22. 10. | Link Hover (prepisati s GSAP na Motion) | https://21st.dev/@Shatlyk1011/components/link-hover |
-| 22. 10. | Centered Nav Header | https://21st.dev/@olewandowski1/components/centered-nav-header |
+| 23. 10. | Interactive Hover Button, više stanja (slanje forme) | https://21st.dev/@Shatlyk1011/components/interactive-hover-button |
 
 Wizard Steps i File Dropzone nisu potrebni: forma ima vlastite prijelaze i polje za prilog (19. 10.). Na 20. 10. kvota je bila 1 preuzimanje, ne 2.

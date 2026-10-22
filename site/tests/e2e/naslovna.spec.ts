@@ -51,11 +51,12 @@ test('smanjeno kretanje: presjek je statično raslojen', async ({ page }) => {
 test('mobilni izbornik se otvara i zatvara tipkom Escape', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto('/');
-  const gumb = page.getByRole('button', { name: 'Izbornik' });
+  const gumb = page.getByRole('button', { name: 'Otvori izbornik' });
   await gumb.click();
   const ladica = page.getByRole('dialog', { name: 'Izbornik' });
   await expect(ladica).toBeVisible();
-  await expect(ladica.getByRole('link')).toHaveCount(6);
+  // 5 poveznica + telefon + „Zatraži ponudu” (kao Sign In + CTA u originalu)
+  await expect(ladica.getByRole('link')).toHaveCount(7);
   await page.keyboard.press('Escape');
   await expect(ladica).toBeHidden();
   await expect(gumb).toBeFocused();

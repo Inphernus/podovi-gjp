@@ -1,6 +1,11 @@
 ---
-import HoverGumb from "../ui/HoverGumb.astro";
+// 21st.dev „Centered Nav Header” (@olewandowski1) — izvornik u podovi-gjp/komponente-21st/centered-nav-header.tsx.
+// Prenesen identično: iste klase (h-16, border-b, px-6, centrirana navigacija ghost gumbima, desno sporedna poveznica |
+// okomita crta | crni gumb sa strelicom, mobilno outline ikona i ladica s desne strane).
+// Razlike: GJP logo umjesto „Acme”, „Sign In” → telefon, ladica je nativni <dialog> (isto ponašanje kao Radix Sheet:
+// Escape, fokus, klik na pozadinu, ulaz 500 ms / izlaz 300 ms), aria-current na trenutnoj stranici.
 import logo from '../../../public/logo.svg?raw';
+import { site } from '../../lib/site';
 
 const nav = [
   { href: '/usluge/', tekst: 'Usluge' },
@@ -10,70 +15,126 @@ const nav = [
   { href: '/kontakt/', tekst: 'Kontakt' },
 ];
 const trenutna = Astro.url.pathname;
+const tel = `tel:${site.telefon.replace(/\s/g, '')}`;
+
+// shadcn Button klase iz registra (base + varijante). Bez tailwind-merge-a, pa je display izdvojen:
+// svaki element sam dodaje 'inline-flex' ili 'hidden … sm:inline-flex' (inače inline-flex pregazi hidden).
+const btn =
+  'items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+const ghost = 'hover:bg-accent hover:text-accent-foreground';
+const primary = 'bg-crna text-gips hover:bg-crna/90';
+const sm = 'h-9 rounded-md px-3';
+const strelica =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="ml-2 size-4"><path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path></svg>';
 ---
 
-<header class="site-header">
-  <div class="wrap bar">
-    <a class="logo" href="/" aria-label="Podovi GJP, naslovna" set:html={logo} />
-    <nav class="nav" aria-label="Glavna navigacija">
-      {nav.map((n) => (
-        <a href={n.href} aria-current={trenutna.startsWith(n.href) ? 'page' : undefined}>{n.tekst}</a>
-      ))}
-    </nav>
-    <HoverGumb href="/zatrazi-ponudu/" tekst="Zatraži ponudu" mali class="cta" />
-    <button class="menu-btn" type="button" aria-haspopup="dialog" data-menu-open>Izbornik</button>
+<header data-21st class="site-header relative flex h-16 w-full items-center border-b border-border bg-background px-6">
+  <a href="/" class="logo flex shrink-0 items-center gap-2.5" aria-label="Podovi GJP, naslovna" set:html={logo} />
+
+  <nav class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex" aria-label="Glavna navigacija">
+    {nav.map((n) => {
+      const aktivna = trenutna.startsWith(n.href);
+      return (
+        <a
+          href={n.href}
+          aria-current={aktivna ? 'page' : undefined}
+          class:list={['inline-flex', btn, ghost, sm, aktivna ? 'text-foreground' : 'text-muted-foreground hover:text-foreground']}
+        >
+          {n.tekst}
+        </a>
+      );
+    })}
+  </nav>
+
+  <div class="ml-auto flex shrink-0 items-center gap-3">
+    <a href={tel} class:list={['header-tel', btn, ghost, sm, 'hidden text-muted-foreground hover:text-foreground sm:inline-flex']}>{site.telefon}</a>
+    <div data-separator class="hidden h-5 w-[1px] shrink-0 bg-border sm:block" aria-hidden="true"></div>
+    <a href="/zatrazi-ponudu/" class:list={['header-cta', btn, primary, sm, 'hidden sm:inline-flex']}>
+      Zatraži ponudu<Fragment set:html={strelica} />
+    </a>
+
+    <button
+      type="button"
+      data-menu-open
+      aria-label="Otvori izbornik"
+      aria-haspopup="dialog"
+      class:list={['inline-flex', btn, 'h-10 w-10 border border-border bg-background hover:bg-accent hover:text-accent-foreground md:hidden']}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-5"><path d="M3 4H21V6H3V4ZM3 11H21V13H3V11ZM3 18H21V20H3V18Z"></path></svg>
+    </button>
   </div>
 
-  <dialog class="drawer" aria-label="Izbornik" data-menu>
-    <div class="drawer-top">
-      <button class="menu-btn" type="button" data-menu-close>Zatvori</button>
+  <dialog data-menu aria-label="Izbornik" class="sheet m-0 ml-auto overscroll-contain h-full max-h-none w-full max-w-none border-l border-border bg-background p-6 text-foreground shadow-lg sm:max-w-xs">
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col space-y-2 text-center sm:text-left">
+        <p class="flex items-center gap-2.5 text-lg font-semibold text-foreground">
+          <span class="logo-mali" aria-hidden="true" set:html={logo} />
+          Podovi GJP
+        </p>
+      </div>
+      <nav class="flex flex-col px-2" aria-label="Mobilna navigacija">
+        {nav.map((n) => (
+          <a href={n.href} class="px-2 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+            {n.tekst}
+          </a>
+        ))}
+      </nav>
+      <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
+        <a href={tel} class:list={['inline-flex', btn, ghost, 'h-10 w-full px-4 py-2']}>{site.telefon}</a>
+        <a href="/zatrazi-ponudu/" class:list={['inline-flex', btn, primary, 'h-10 w-full px-4 py-2']}>
+          Zatraži ponudu<Fragment set:html={strelica} />
+        </a>
+      </div>
     </div>
-    <nav aria-label="Mobilna navigacija">
-      {nav.map((n) => <a href={n.href}>{n.tekst}</a>)}
-      <HoverGumb href="/zatrazi-ponudu/" tekst="Zatraži ponudu" class="drawer-cta" />
-    </nav>
+    <button
+      type="button"
+      data-menu-close
+      class="absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      <span class="sr-only">Zatvori</span>
+    </button>
   </dialog>
 </header>
 
 <script>
   const dialog = document.querySelector<HTMLDialogElement>('[data-menu]');
+  const zatvori = () => {
+    if (!dialog?.open || dialog.dataset.zatvaranje) return;
+    const smanjeno = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (smanjeno) return dialog.close();
+    dialog.dataset.zatvaranje = '1';
+    setTimeout(() => {
+      delete dialog.dataset.zatvaranje;
+      dialog.close();
+    }, 300);
+  };
   document.querySelector('[data-menu-open]')?.addEventListener('click', () => dialog?.showModal());
-  document.querySelector('[data-menu-close]')?.addEventListener('click', () => dialog?.close());
-  dialog?.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+  document.querySelector('[data-menu-close]')?.addEventListener('click', zatvori);
+  dialog?.addEventListener('cancel', (e) => {
+    e.preventDefault();
+    zatvori();
+  });
+  dialog?.addEventListener('click', (e) => {
+    if (e.target === dialog) zatvori();
+    if ((e.target as Element).closest('a')) dialog.close();
+  });
 </script>
 
 <style>
-  .site-header { border-bottom: 1px solid var(--border); }
-  .bar { display: flex; align-items: center; gap: 2rem; min-height: 76px; }
-  .logo { display: block; width: 104px; color: var(--crna); flex: none; }
+  .logo { width: 92px; color: var(--crna); }
   .logo :global(svg) { display: block; width: 100%; height: auto; }
-  .nav { display: flex; gap: 1.75rem; margin-left: auto; }
-  .nav a {
-    color: inherit; text-decoration: none; font-weight: 500; padding-block: 0.6rem;
-    text-decoration-color: var(--primary); text-decoration-thickness: 2px; text-underline-offset: 6px;
-  }
-  .nav a:hover, .nav a[aria-current='page'] { text-decoration-line: underline; }
-  .menu-btn {
-    display: none; min-height: 44px; padding: 0 1rem; margin-left: auto;
-    font: 700 0.95rem/1 var(--font-sans); background: none; color: inherit;
-    border: 2px solid currentColor; border-radius: 2px; cursor: pointer;
-  }
-  .drawer {
-    margin: 0 0 0 auto; height: 100dvh; max-height: none; width: min(22rem, 100vw);
-    padding: 1rem clamp(1rem, 4vw, 2rem); border: 0; background: var(--gips); color: var(--crna);
-    overscroll-behavior: contain;
-  }
-  .drawer::backdrop { background: rgb(0 0 0 / 0.45); }
-  .drawer-top { display: flex; justify-content: flex-end; }
-  .drawer nav { display: flex; flex-direction: column; gap: 0.25rem; margin-top: 2rem; }
-  .drawer nav a:not(.btn) {
-    font-size: 1.6rem; font-weight: 800; font-stretch: 70%; color: inherit; text-decoration: none;
-    padding-block: 0.5rem; border-bottom: 1px solid var(--estrih);
-  }
-  .drawer nav :global(.drawer-cta) { margin-top: 1.5rem; }
+  .logo-mali { display: block; width: 56px; }
+  .logo-mali :global(svg) { display: block; width: 100%; height: auto; }
 
-  @media (max-width: 900px) {
-    .nav, .bar :global(.cta) { display: none; }
-    .menu-btn { display: inline-flex; align-items: center; }
-  }
+  /* Radix Sheet (side="right"): fiksno uz desni rub, tamna pozadina, ulaz 500 ms, izlaz 300 ms */
+  .sheet { position: fixed; inset: 0 0 0 auto; }
+  .sheet::backdrop { background: rgb(0 0 0 / 0.8); animation: pozadina-ulaz 0.5s ease-in-out; }
+  .sheet[open] { animation: ladica-ulaz 0.5s ease-in-out; }
+  .sheet[data-zatvaranje] { animation: ladica-izlaz 0.3s ease-in-out forwards; }
+  .sheet[data-zatvaranje]::backdrop { animation: pozadina-izlaz 0.3s ease-in-out forwards; }
+  @keyframes ladica-ulaz { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes ladica-izlaz { from { transform: translateX(0); } to { transform: translateX(100%); } }
+  @keyframes pozadina-ulaz { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pozadina-izlaz { from { opacity: 1; } to { opacity: 0; } }
 </style>
