@@ -79,7 +79,6 @@ export default function HoverExpandGallery({
                 <button
                   type="button"
                   aria-expanded={isActive}
-                  aria-label={item.title}
                   onPointerEnter={(event) => {
                     if (event.pointerType === 'mouse') open(index);
                   }}
@@ -89,7 +88,7 @@ export default function HoverExpandGallery({
                 >
                   <span
                     className={`flex h-16 w-full items-center justify-between gap-3 overflow-hidden px-5 text-[14px] tracking-tight transition-colors duration-[var(--hx-t)] ease-out motion-reduce:transition-none ${
-                      isActive ? 'text-foreground' : 'text-foreground/40'
+                      isActive ? 'text-foreground' : 'text-foreground/60'
                     }`}
                   >
                     <span className="truncate">{item.title}</span>
@@ -175,7 +174,6 @@ export default function HoverExpandGallery({
               <button
                 type="button"
                 aria-expanded={isActive}
-                aria-label={item.title}
                 onPointerEnter={(event) => {
                   if (event.pointerType === 'mouse') open(index);
                 }}
@@ -186,7 +184,7 @@ export default function HoverExpandGallery({
                 {/* Label. A row below 1024px; above it a rail down the left of the panel. */}
                 <span
                   className={`flex h-16 w-full items-center justify-between gap-3 overflow-hidden px-5 text-[14px] tracking-tight transition-colors duration-[var(--hx-t)] ease-out motion-reduce:transition-none lg:h-full lg:w-[var(--hx-rail)] lg:flex-col-reverse lg:justify-between lg:px-0 lg:py-5 ${
-                    isActive ? 'text-foreground' : 'text-foreground/40'
+                    isActive ? 'text-foreground' : 'text-foreground/60'
                   }`}
                 >
                   <span className="truncate lg:overflow-hidden lg:rotate-180 lg:whitespace-nowrap lg:[writing-mode:vertical-rl]">

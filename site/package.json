@@ -12,7 +12,8 @@
     "astro": "astro",
     "test": "vitest run",
     "e2e": "playwright test",
-    "check": "astro check"
+    "check": "astro check",
+    "budzet": "node scripts/js-budzet.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "^6.1.0",

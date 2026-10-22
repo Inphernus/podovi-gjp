@@ -1,5 +1,13 @@
 import { test, expect } from '@playwright/test';
 
+test('mobilna ladica označava trenutnu stranicu', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/reference/');
+  await page.getByRole('button', { name: 'Otvori izbornik' }).click();
+  const ladica = page.getByRole('dialog', { name: 'Izbornik' });
+  await expect(ladica.locator('a[aria-current="page"]')).toHaveText('Reference');
+});
+
 // Header = 21st.dev Centered Nav Header, prenesen identično (vidi komponente-21st/centered-nav-header.tsx)
 test.describe('desktop', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
@@ -24,7 +32,7 @@ test.describe('desktop', () => {
 
   test('poveznica trenutne stranice je istaknuta', async ({ page }) => {
     await page.goto('/usluge/');
-    await expect(page.locator('header[data-21st] nav a[aria-current="page"]')).toHaveText('Usluge');
+    await expect(page.locator('header[data-21st] nav[aria-label="Glavna navigacija"] a[aria-current="page"]')).toHaveText('Usluge');
   });
 });
 

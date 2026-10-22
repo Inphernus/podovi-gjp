@@ -28,12 +28,12 @@ const svg = renderPresjekSvg(SLOJEVI);
         </ol>
         <div class="detail">
           {SLOJEVI.map((s) => (
-            <article id={`sloj-${s.id}`} role="tabpanel" aria-labelledby={`tab-${s.id}`}>
+            <section id={`sloj-${s.id}`} role="tabpanel" aria-labelledby={`tab-${s.id}`}>
               <span class="big" aria-hidden="true">{s.velikiBroj}</span>
               <h3>{s.naslov}</h3>
               <p>{s.tekst}</p>
               {s.link && <a class="link" href={s.link.href}>{s.link.tekst}</a>}
-            </article>
+            </section>
           ))}
         </div>
       </div>
@@ -46,7 +46,7 @@ const svg = renderPresjekSvg(SLOJEVI);
   const root = document.querySelector('.presjek');
   if (root) {
     const gumbi = root.querySelectorAll<HTMLButtonElement>('.layer-btn');
-    const clanci = root.querySelectorAll<HTMLElement>('.detail article');
+    const clanci = root.querySelectorAll<HTMLElement>('.detail section');
     const slojevi = root.querySelectorAll<SVGGElement>('.stack .layer');
     const stack = root.querySelector('.stack');
     const aktiviraj = (id: string) => {
@@ -158,9 +158,9 @@ const svg = renderPresjekSvg(SLOJEVI);
 
   .detail { margin-top: 1.5rem; }
   .js .detail { min-height: 17rem; }
-  .detail article + article { margin-top: 2rem; }
-  .js .detail article + article { margin-top: 0; }
-  .detail article[hidden] { display: none; }
+  .detail section + section { margin-top: 2rem; }
+  .js .detail section + section { margin-top: 0; }
+  .detail section[hidden] { display: none; }
   .big {
     display: block; margin: 0 0 0.5rem; font-size: clamp(3.2rem, 6vw, 5.2rem); line-height: 0.9;
     font-weight: 900; font-stretch: 62%; color: transparent; -webkit-text-stroke: 1.5px var(--primary);

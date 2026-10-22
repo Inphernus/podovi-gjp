@@ -49,3 +49,30 @@ test('forma: e-mail bez provjere pravopisa i fokus na prvu grešku', async ({ pa
   await page.getByRole('button', { name: 'Pošalji radni nalog' }).click();
   await expect(page.getByLabel('E-mail')).toBeFocused();
 });
+
+test('Lighthouse a11y: tabpanel nije article, galerija ima kontrast i ime = vidljivi tekst', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('article[role="tabpanel"]')).toHaveCount(0);
+  await expect(page.locator('[role="tabpanel"]')).toHaveCount(7);
+
+  const galerija = page.locator('[data-usluge-galerija]');
+  await expect(galerija.locator('button[aria-label]')).toHaveCount(0);
+  await expect(galerija.getByRole('button', { name: /^LVT vinil podovi/ })).toBeVisible();
+
+  // neaktivni natpis: kontrast prema pozadini ≥ 4.5
+  const omjer = await galerija.locator('button[aria-expanded="false"] .truncate').first().evaluate((el) => {
+    const rgba = (s: string) => s.match(/[\d.]+/g)!.map(Number);
+    const [r, g, b, a = 1] = rgba(getComputedStyle(el).color);
+    let p = el.parentElement!;
+    while (getComputedStyle(p).backgroundColor === 'rgba(0, 0, 0, 0)') p = p.parentElement!;
+    const [br, bg, bb] = rgba(getComputedStyle(p).backgroundColor);
+    const mix = [r * a + br * (1 - a), g * a + bg * (1 - a), b * a + bb * (1 - a)];
+    const L = (c: number[]) => {
+      const [x, y, z] = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+      return 0.2126 * x + 0.7152 * y + 0.0722 * z;
+    };
+    const [l1, l2] = [L(mix), L([br, bg, bb])].sort((m, n) => n - m);
+    return (l1 + 0.05) / (l2 + 0.05);
+  });
+  expect(omjer).toBeGreaterThanOrEqual(4.5);
+});

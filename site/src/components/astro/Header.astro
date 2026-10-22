@@ -69,12 +69,12 @@ const strelica =
       <div class="flex flex-col space-y-2 text-center sm:text-left">
         <p class="flex items-center gap-2.5 text-lg font-semibold text-foreground">
           <span class="logo-mali" aria-hidden="true" set:html={logo} />
-          Podovi GJP
+          <span translate="no">Podovi GJP</span>
         </p>
       </div>
       <nav class="flex flex-col px-2" aria-label="Mobilna navigacija">
         {nav.map((n) => (
-          <a href={n.href} class="px-2 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+          <a href={n.href} aria-current={trenutna.startsWith(n.href) ? 'page' : undefined} class="px-2 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
             {n.tekst}
           </a>
         ))}
@@ -128,7 +128,13 @@ const strelica =
   .logo-mali :global(svg) { display: block; width: 100%; height: auto; }
 
   /* Radix Sheet (side="right"): fiksno uz desni rub, tamna pozadina, ulaz 500 ms, izlaz 300 ms */
-  .sheet { position: fixed; inset: 0 0 0 auto; }
+  .sheet {
+    position: fixed;
+    inset: 0 0 0 auto;
+    padding-top: max(1.5rem, env(safe-area-inset-top));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
   .sheet::backdrop { background: rgb(0 0 0 / 0.8); animation: pozadina-ulaz 0.5s ease-in-out; }
   .sheet[open] { animation: ladica-ulaz 0.5s ease-in-out; }
   .sheet[data-zatvaranje] { animation: ladica-izlaz 0.3s ease-in-out forwards; }
@@ -137,4 +143,8 @@ const strelica =
   @keyframes ladica-izlaz { from { transform: translateX(0); } to { transform: translateX(100%); } }
   @keyframes pozadina-ulaz { from { opacity: 0; } to { opacity: 1; } }
   @keyframes pozadina-izlaz { from { opacity: 1; } to { opacity: 0; } }
+  /* globalni reset (*, ::before, ::after) ne pokriva ::backdrop */
+  @media (prefers-reduced-motion: reduce) {
+    .sheet::backdrop { animation: none; }
+  }
 </style>
